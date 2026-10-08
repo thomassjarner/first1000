@@ -1,0 +1,10 @@
+.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+dist/
+build/
+tools/cache/
+*.zip
+*.tar.gz
+.DS_Store
