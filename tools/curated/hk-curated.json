@@ -1,0 +1,1543 @@
+[
+  {
+    "id": "hk-01",
+    "cantonese_traditional": "唔該",
+    "jyutping": "m4 goi1",
+    "mandarin_simplified": "谢谢",
+    "pinyin": "xiè xie",
+    "numeric": "xie4 xie5",
+    "english": "thank you for a service or help",
+    "theme": "politeness",
+    "examples": {
+      "cantonese": {
+        "text": "唔該你幫我開咗門。",
+        "jyutping": "m4 goi1 nei5 bong1 ngo5 hoi1 zo2 mun4",
+        "english": "Thank you for opening the door for me.",
+        "authored": true,
+        "source": "Original example authored for this project"
+      },
+      "mandarin": {
+        "text": "谢谢你帮我开了门。",
+        "pinyin": "xiè xie nǐ bāng wǒ kāi le mén",
+        "numeric": "xie4 xie5 ni3 bang1 wo3 kai1 le5 men2",
+        "english": "Thank you for opening the door for me.",
+        "authored": true,
+        "source": "Original example authored for this project"
+      }
+    },
+    "source_records": [
+      {
+        "traditional": "唔該",
+        "simplified": "唔该",
+        "source_pinyin": "wu2 gai1",
+        "jyutping": "m4 goi1",
+        "gloss": "/(verb) please; thanks (for services rendered rather than gifts); excuse me/",
+        "source_file": "cccanto-webdist.txt"
+      }
+    ],
+    "provenance": "Newly curated reconstruction entry, with original authored examples; not recovered original curriculum membership",
+    "dictionary_license": "CC BY-SA 3.0; retain Pleco / CC-CEDICT notices for source-derived dictionary material",
+    "note": "Use for services/help and for polite requests. 多謝 is usual for gifts and substantial kindness."
+  },
+  {
+    "id": "hk-02",
+    "cantonese_traditional": "唔該晒",
+    "jyutping": "m4 goi1 saai3",
+    "mandarin_simplified": "太感谢了",
+    "pinyin": "tài gǎn xiè le",
+    "numeric": "tai4 gan3 xie4 le5",
+    "english": "thank you very much for help or a service",
+    "theme": "politeness",
+    "examples": {
+      "cantonese": {
+        "text": "唔該晒，你幫咗我好多。",
+        "jyutping": "m4 goi1 saai3 nei5 bong1 zo2 ngo5 hou2 do1",
+        "english": "Thank you very much. You helped me a lot.",
+        "authored": true,
+        "source": "Original example authored for this project"
+      },
+      "mandarin": {
+        "text": "太感谢了，你帮了我很多。",
+        "pinyin": "tài gǎn xiè le nǐ bāng le wǒ hěn duō",
+        "numeric": "tai4 gan3 xie4 le5 ni3 bang1 le5 wo3 hen3 duo1",
+        "english": "Thank you very much. You helped me a lot.",
+        "authored": true,
+        "source": "Original example authored for this project"
+      }
+    },
+    "source_records": [
+      {
+        "traditional": "唔該晒",
+        "simplified": "唔该晒",
+        "source_pinyin": "wu2 gai1 shai4",
+        "jyutping": "m4 goi1 saai3",
+        "gloss": "/thank you very much (for services received as opposed to gifts)/",
+        "source_file": "cccanto-webdist.txt"
+      }
+    ],
+    "provenance": "Newly curated reconstruction entry, with original authored examples; not recovered original curriculum membership",
+    "dictionary_license": "CC BY-SA 3.0; retain Pleco / CC-CEDICT notices for source-derived dictionary material",
+    "note": "An emphatic service/help thank-you; 晒 is the selected HK spelling of saai3 in this expression."
+  },
+  {
+    "id": "hk-03",
+    "cantonese_traditional": "多謝",
+    "jyutping": "do1 ze6",
+    "mandarin_simplified": "谢谢",
+    "pinyin": "xiè xie",
+    "numeric": "xie4 xie5",
+    "english": "thank you for a gift or kindness",
+    "theme": "politeness",
+    "examples": {
+      "cantonese": {
+        "text": "多謝你送禮物畀我。",
+        "jyutping": "do1 ze6 nei5 sung3 lai5 mat6 bei2 ngo5",
+        "english": "Thank you for giving me a gift.",
+        "authored": true,
+        "source": "Original example authored for this project"
+      },
+      "mandarin": {
+        "text": "谢谢你送我礼物。",
+        "pinyin": "xiè xie nǐ sòng wǒ lǐ wù",
+        "numeric": "xie4 xie5 ni3 song4 wo3 li3 wu4",
+        "english": "Thank you for giving me a gift.",
+        "authored": true,
+        "source": "Original example authored for this project"
+      }
+    },
+    "source_records": [
+      {
+        "traditional": "多謝",
+        "simplified": "多谢",
+        "source_pinyin": "duo1 xie4",
+        "jyutping": "do1 ze6",
+        "gloss": "",
+        "source_file": "cccedict-canto-readings-150923.txt"
+      }
+    ],
+    "provenance": "Newly curated reconstruction entry, with original authored examples; not recovered original curriculum membership",
+    "dictionary_license": "CC BY-SA 3.0; retain Pleco / CC-CEDICT notices for source-derived dictionary material",
+    "note": "Selected gratitude sense; do not mix the service/request distinction with 唔該."
+  },
+  {
+    "id": "hk-04",
+    "cantonese_traditional": "多謝晒",
+    "jyutping": "do1 ze6 saai3",
+    "mandarin_simplified": "非常感谢",
+    "pinyin": "fēi cháng gǎn xiè",
+    "numeric": "fei1 chang2 gan3 xie4",
+    "english": "thank you very much for a gift or kindness",
+    "theme": "politeness",
+    "examples": {
+      "cantonese": {
+        "text": "多謝晒你嘅心意。",
+        "jyutping": "do1 ze6 saai3 nei5 ge3 sam1 ji3",
+        "english": "Thank you very much for your kind thought.",
+        "authored": true,
+        "source": "Original example authored for this project"
+      },
+      "mandarin": {
+        "text": "非常感谢你的心意。",
+        "pinyin": "fēi cháng gǎn xiè nǐ de xīn yì",
+        "numeric": "fei1 chang2 gan3 xie4 ni3 de5 xin1 yi4",
+        "english": "Thank you very much for your kind thought.",
+        "authored": true,
+        "source": "Original example authored for this project"
+      }
+    },
+    "source_records": [
+      {
+        "traditional": "多謝晒",
+        "simplified": "多谢晒",
+        "source_pinyin": "duo1xie4 shai4",
+        "jyutping": "do1 ze6 saai3",
+        "gloss": "/thank you very much; thank you so much [colloquial]/",
+        "source_file": "cccanto-webdist.txt"
+      }
+    ],
+    "provenance": "Newly curated reconstruction entry, with original authored examples; not recovered original curriculum membership",
+    "dictionary_license": "CC BY-SA 3.0; retain Pleco / CC-CEDICT notices for source-derived dictionary material"
+  },
+  {
+    "id": "hk-05",
+    "cantonese_traditional": "早晨",
+    "jyutping": "zou2 san4",
+    "mandarin_simplified": "早上好",
+    "pinyin": "zǎo shang hǎo",
+    "numeric": "zao3 shang5 hao3",
+    "english": "good morning",
+    "theme": "greetings",
+    "examples": {
+      "cantonese": {
+        "text": "老師，早晨！",
+        "jyutping": "lou5 si1 zou2 san4",
+        "english": "Good morning, teacher!",
+        "authored": true,
+        "source": "Original example authored for this project"
+      },
+      "mandarin": {
+        "text": "老师，早上好！",
+        "pinyin": "lǎo shī zǎo shang hǎo",
+        "numeric": "lao3 shi1 zao3 shang5 hao3",
+        "english": "Good morning, teacher!",
+        "authored": true,
+        "source": "Original example authored for this project"
+      }
+    },
+    "source_records": [
+      {
+        "traditional": "早晨",
+        "simplified": "早晨",
+        "source_pinyin": "zao3 chen2",
+        "jyutping": "zou2 san4",
+        "gloss": "",
+        "source_file": "cccedict-canto-readings-150923.txt"
+      }
+    ],
+    "provenance": "Newly curated reconstruction entry, with original authored examples; not recovered original curriculum membership",
+    "dictionary_license": "CC BY-SA 3.0; retain Pleco / CC-CEDICT notices for source-derived dictionary material"
+  },
+  {
+    "id": "hk-06",
+    "cantonese_traditional": "早唞",
+    "jyutping": "zou2 tau2",
+    "mandarin_simplified": "晚安",
+    "pinyin": "wǎn ān",
+    "numeric": "wan3 an1",
+    "english": "good night",
+    "theme": "greetings",
+    "examples": {
+      "cantonese": {
+        "text": "早唞，聽日見。",
+        "jyutping": "zou2 tau2 ting1 jat6 gin3",
+        "english": "Good night. See you tomorrow.",
+        "authored": true,
+        "source": "Original example authored for this project"
+      },
+      "mandarin": {
+        "text": "晚安，明天见。",
+        "pinyin": "wǎn ān míng tiān jiàn",
+        "numeric": "wan3 an1 ming2 tian1 jian4",
+        "english": "Good night. See you tomorrow.",
+        "authored": true,
+        "source": "Original example authored for this project"
+      }
+    },
+    "source_records": [
+      {
+        "traditional": "早唞",
+        "simplified": "早唞",
+        "source_pinyin": "zao3 dou3",
+        "jyutping": "zou2 tau2",
+        "gloss": "/(phrase) \"good night!\"; to tell someone piss off as they have annoyed you very much./",
+        "source_file": "cccanto-webdist.txt"
+      }
+    ],
+    "provenance": "Newly curated reconstruction entry, with original authored examples; not recovered original curriculum membership",
+    "dictionary_license": "CC BY-SA 3.0; retain Pleco / CC-CEDICT notices for source-derived dictionary material",
+    "note": "Selected friendly good-night sense only; historical dictionary also lists an unrelated dismissive use."
+  },
+  {
+    "id": "hk-07",
+    "cantonese_traditional": "拜拜",
+    "jyutping": "baai1 baai3",
+    "mandarin_simplified": "再见",
+    "pinyin": "zài jiàn",
+    "numeric": "zai4 jian4",
+    "english": "bye",
+    "theme": "greetings",
+    "examples": {
+      "cantonese": {
+        "text": "我走先喇，拜拜！",
+        "jyutping": "ngo5 zau2 sin1 laa3 baai1 baai3",
+        "english": "I'm heading off. Bye!",
+        "authored": true,
+        "source": "Original example authored for this project"
+      },
+      "mandarin": {
+        "text": "我先走了，再见！",
+        "pinyin": "wǒ xiān zǒu le zài jiàn",
+        "numeric": "wo3 xian1 zou3 le5 zai4 jian4",
+        "english": "I'm heading off. Bye!",
+        "authored": true,
+        "source": "Original example authored for this project"
+      }
+    },
+    "source_records": [
+      {
+        "traditional": "拜拜",
+        "simplified": "拜拜",
+        "source_pinyin": "bai2 bai2",
+        "jyutping": "baai1 baai3",
+        "gloss": "",
+        "source_file": "cccedict-canto-readings-150923.txt"
+      },
+      {
+        "traditional": "拜拜",
+        "simplified": "拜拜",
+        "source_pinyin": "bai4 bai5",
+        "jyutping": "baai1 baai3",
+        "gloss": "",
+        "source_file": "cccedict-canto-readings-150923.txt"
+      }
+    ],
+    "provenance": "Newly curated reconstruction entry, with original authored examples; not recovered original curriculum membership",
+    "dictionary_license": "CC BY-SA 3.0; retain Pleco / CC-CEDICT notices for source-derived dictionary material"
+  },
+  {
+    "id": "hk-08",
+    "cantonese_traditional": "對唔住",
+    "jyutping": "deoi3 m4 zyu6",
+    "mandarin_simplified": "对不起",
+    "pinyin": "duì bu qǐ",
+    "numeric": "dui4 bu5 qi3",
+    "english": "sorry",
+    "theme": "politeness",
+    "examples": {
+      "cantonese": {
+        "text": "對唔住，我遲咗。",
+        "jyutping": "deoi3 m4 zyu6 ngo5 ci4 zo2",
+        "english": "Sorry, I'm late.",
+        "authored": true,
+        "source": "Original example authored for this project"
+      },
+      "mandarin": {
+        "text": "对不起，我迟到了。",
+        "pinyin": "duì bu qǐ wǒ chí dào le",
+        "numeric": "dui4 bu5 qi3 wo3 chi2 dao4 le5",
+        "english": "Sorry, I'm late.",
+        "authored": true,
+        "source": "Original example authored for this project"
+      }
+    },
+    "source_records": [
+      {
+        "traditional": "對唔住",
+        "simplified": "对唔住",
+        "source_pinyin": "dui4 n2 zhu4",
+        "jyutping": "deoi3 m4 zyu6",
+        "gloss": "/(Phrase) sorry./",
+        "source_file": "cccanto-webdist.txt"
+      }
+    ],
+    "provenance": "Newly curated reconstruction entry, with original authored examples; not recovered original curriculum membership",
+    "dictionary_license": "CC BY-SA 3.0; retain Pleco / CC-CEDICT notices for source-derived dictionary material"
+  },
+  {
+    "id": "hk-09",
+    "cantonese_traditional": "唔好意思",
+    "jyutping": "m4 hou2 ji3 si3",
+    "mandarin_simplified": "不好意思",
+    "pinyin": "bù hǎo yì si",
+    "numeric": "bu4 hao3 yi4 si5",
+    "english": "excuse me; a polite apology",
+    "theme": "politeness",
+    "examples": {
+      "cantonese": {
+        "text": "唔好意思，借過。",
+        "jyutping": "m4 hou2 ji3 si3 ze3 gwo3",
+        "english": "Excuse me, please let me through.",
+        "authored": true,
+        "source": "Original example authored for this project"
+      },
+      "mandarin": {
+        "text": "不好意思，请让我过去。",
+        "pinyin": "bù hǎo yì si qǐng ràng wǒ guò qù",
+        "numeric": "bu4 hao3 yi4 si5 qing3 rang4 wo3 guo4 qu4",
+        "english": "Excuse me, please let me through.",
+        "authored": true,
+        "source": "Original example authored for this project"
+      }
+    },
+    "source_records": [
+      {
+        "traditional": "唔好意思",
+        "simplified": "唔好意思",
+        "source_pinyin": "wu2 hao3 yi4 si5",
+        "jyutping": "m4 hou2 ji3 si3",
+        "gloss": "/(slang) to feel apologetic; excuse me; I'm sorry/",
+        "source_file": "cccanto-webdist.txt"
+      }
+    ],
+    "provenance": "Newly curated reconstruction entry, with original authored examples; not recovered original curriculum membership",
+    "dictionary_license": "CC BY-SA 3.0; retain Pleco / CC-CEDICT notices for source-derived dictionary material"
+  },
+  {
+    "id": "hk-10",
+    "cantonese_traditional": "唔緊要",
+    "jyutping": "m4 gan2 jiu3",
+    "mandarin_simplified": "没关系",
+    "pinyin": "méi guān xi",
+    "numeric": "mei2 guan1 xi5",
+    "english": "it doesn't matter",
+    "theme": "politeness",
+    "examples": {
+      "cantonese": {
+        "text": "唔緊要，我等你。",
+        "jyutping": "m4 gan2 jiu3 ngo5 dang2 nei5",
+        "english": "It doesn't matter. I'll wait for you.",
+        "authored": true,
+        "source": "Original example authored for this project"
+      },
+      "mandarin": {
+        "text": "没关系，我等你。",
+        "pinyin": "méi guān xi wǒ děng nǐ",
+        "numeric": "mei2 guan1 xi5 wo3 deng3 ni3",
+        "english": "It doesn't matter. I'll wait for you.",
+        "authored": true,
+        "source": "Original example authored for this project"
+      }
+    },
+    "source_records": [
+      {
+        "traditional": "唔緊要",
+        "simplified": "唔紧要",
+        "source_pinyin": "wu2 jin3 yao4",
+        "jyutping": "m4 gan2 jiu3",
+        "gloss": "/(slang) it doesn't matter; no worries/",
+        "source_file": "cccanto-webdist.txt"
+      }
+    ],
+    "provenance": "Newly curated reconstruction entry, with original authored examples; not recovered original curriculum membership",
+    "dictionary_license": "CC BY-SA 3.0; retain Pleco / CC-CEDICT notices for source-derived dictionary material"
+  },
+  {
+    "id": "hk-11",
+    "cantonese_traditional": "冇問題",
+    "jyutping": "mou5 man6 tai4",
+    "mandarin_simplified": "没问题",
+    "pinyin": "méi wèn tí",
+    "numeric": "mei2 wen4 ti2",
+    "english": "no problem",
+    "theme": "politeness",
+    "examples": {
+      "cantonese": {
+        "text": "幫你買飛？冇問題！",
+        "jyutping": "bong1 nei5 maai5 fei1 mou5 man6 tai4",
+        "english": "Buy you a ticket? No problem!",
+        "authored": true,
+        "source": "Original example authored for this project"
+      },
+      "mandarin": {
+        "text": "帮你买票？没问题！",
+        "pinyin": "bāng nǐ mǎi piào méi wèn tí",
+        "numeric": "bang1 ni3 mai3 piao4 mei2 wen4 ti2",
+        "english": "Buy you a ticket? No problem!",
+        "authored": true,
+        "source": "Original example authored for this project"
+      }
+    },
+    "source_records": [
+      {
+        "traditional": "冇問題",
+        "simplified": "冇问题",
+        "source_pinyin": "mao3 wen4 ti2",
+        "jyutping": "mou5 man6 tai4",
+        "gloss": "/\"no problem\"/",
+        "source_file": "cccanto-webdist.txt"
+      }
+    ],
+    "provenance": "Newly curated reconstruction entry, with original authored examples; not recovered original curriculum membership",
+    "dictionary_license": "CC BY-SA 3.0; retain Pleco / CC-CEDICT notices for source-derived dictionary material"
+  },
+  {
+    "id": "hk-12",
+    "cantonese_traditional": "好耐冇見",
+    "jyutping": "hou2 noi6 mou5 gin3",
+    "mandarin_simplified": "好久不见",
+    "pinyin": "hǎo jiǔ bù jiàn",
+    "numeric": "hao3 jiu3 bu4 jian4",
+    "english": "long time no see",
+    "theme": "greetings",
+    "examples": {
+      "cantonese": {
+        "text": "好耐冇見，你近排點呀？",
+        "jyutping": "hou2 noi6 mou5 gin3 nei5 gan6 paai4 dim2 aa3",
+        "english": "Long time no see. How have you been?",
+        "authored": true,
+        "source": "Original example authored for this project"
+      },
+      "mandarin": {
+        "text": "好久不见，你最近怎么样？",
+        "pinyin": "hǎo jiǔ bù jiàn nǐ zuì jìn zěn me yàng",
+        "numeric": "hao3 jiu3 bu4 jian4 ni3 zui4 jin4 zen3 me5 yang4",
+        "english": "Long time no see. How have you been?",
+        "authored": true,
+        "source": "Original example authored for this project"
+      }
+    },
+    "source_records": [
+      {
+        "traditional": "好耐冇見",
+        "simplified": "好耐冇见",
+        "source_pinyin": "hao3 nai4 mao3 jian4",
+        "jyutping": "hou2 noi6 mou5 gin3",
+        "gloss": "/long time no see/",
+        "source_file": "cccanto-webdist.txt"
+      }
+    ],
+    "provenance": "Newly curated reconstruction entry, with original authored examples; not recovered original curriculum membership",
+    "dictionary_license": "CC BY-SA 3.0; retain Pleco / CC-CEDICT notices for source-derived dictionary material"
+  },
+  {
+    "id": "hk-13",
+    "cantonese_traditional": "飲茶",
+    "jyutping": "jam2 caa4",
+    "mandarin_simplified": "喝茶吃点心",
+    "pinyin": "hē chá chī diǎn xin",
+    "numeric": "he1 cha2 chi1 dian3 xin5",
+    "english": "go for yum cha: tea and dim sum",
+    "theme": "food",
+    "examples": {
+      "cantonese": {
+        "text": "我哋星期日去飲茶。",
+        "jyutping": "ngo5 dei6 sing1 kei4 jat6 heoi3 jam2 caa4",
+        "english": "We're going for tea and dim sum on Sunday.",
+        "authored": true,
+        "source": "Original example authored for this project"
+      },
+      "mandarin": {
+        "text": "我们星期天去喝茶吃点心。",
+        "pinyin": "wǒ men xīng qī tiān qù hē chá chī diǎn xin",
+        "numeric": "wo3 men5 xing1 qi1 tian1 qu4 he1 cha2 chi1 dian3 xin5",
+        "english": "We're going for tea and dim sum on Sunday.",
+        "authored": true,
+        "source": "Original example authored for this project"
+      }
+    },
+    "source_records": [
+      {
+        "traditional": "飲茶",
+        "simplified": "饮茶",
+        "source_pinyin": "yin3 cha2",
+        "jyutping": "jam2 caa4",
+        "gloss": "/(verb) drink tea/",
+        "source_file": "cccanto-webdist.txt"
+      },
+      {
+        "traditional": "飲茶",
+        "simplified": "饮茶",
+        "source_pinyin": "yin3 cha2",
+        "jyutping": "jam2 caa4",
+        "gloss": "",
+        "source_file": "cccedict-canto-readings-150923.txt"
+      }
+    ],
+    "provenance": "Newly curated reconstruction entry, with original authored examples; not recovered original curriculum membership",
+    "dictionary_license": "CC BY-SA 3.0; retain Pleco / CC-CEDICT notices for source-derived dictionary material",
+    "note": "Selected Hong Kong yum-cha outing sense. The literal words can also mean simply drinking tea."
+  },
+  {
+    "id": "hk-14",
+    "cantonese_traditional": "菠蘿包",
+    "jyutping": "bo1 lo4 baau1",
+    "mandarin_simplified": "菠萝包",
+    "pinyin": "bō luó bāo",
+    "numeric": "bo1 luo2 bao1",
+    "english": "pineapple bun",
+    "theme": "food",
+    "examples": {
+      "cantonese": {
+        "text": "我想食一個菠蘿包。",
+        "jyutping": "ngo5 soeng2 sik6 jat1 go3 bo1 lo4 baau1",
+        "english": "I'd like a pineapple bun.",
+        "authored": true,
+        "source": "Original example authored for this project"
+      },
+      "mandarin": {
+        "text": "我想吃一个菠萝包。",
+        "pinyin": "wǒ xiǎng chī yī gè bō luó bāo",
+        "numeric": "wo3 xiang3 chi1 yi1 ge4 bo1 luo2 bao1",
+        "english": "I'd like a pineapple bun.",
+        "authored": true,
+        "source": "Original example authored for this project"
+      }
+    },
+    "source_records": [
+      {
+        "traditional": "菠蘿包",
+        "simplified": "菠萝包",
+        "source_pinyin": "bo1 luo2 bao1",
+        "jyutping": "bo1 lo4 baau1",
+        "gloss": "/a pineapple bun, where the top of it is made to resemble a pineapple/",
+        "source_file": "cccanto-webdist.txt"
+      }
+    ],
+    "provenance": "Newly curated reconstruction entry, with original authored examples; not recovered original curriculum membership",
+    "dictionary_license": "CC BY-SA 3.0; retain Pleco / CC-CEDICT notices for source-derived dictionary material",
+    "note": "A bun named for the appearance of its topping; it normally contains no pineapple."
+  },
+  {
+    "id": "hk-15",
+    "cantonese_traditional": "奶茶",
+    "jyutping": "naai5 caa4",
+    "mandarin_simplified": "奶茶",
+    "pinyin": "nǎi chá",
+    "numeric": "nai3 cha2",
+    "english": "milk tea",
+    "theme": "food",
+    "examples": {
+      "cantonese": {
+        "text": "我想飲一杯奶茶。",
+        "jyutping": "ngo5 soeng2 jam2 jat1 bui1 naai5 caa4",
+        "english": "I'd like a cup of milk tea.",
+        "authored": true,
+        "source": "Original example authored for this project"
+      },
+      "mandarin": {
+        "text": "我想喝一杯奶茶。",
+        "pinyin": "wǒ xiǎng hē yī bēi nǎi chá",
+        "numeric": "wo3 xiang3 he1 yi1 bei1 nai3 cha2",
+        "english": "I'd like a cup of milk tea.",
+        "authored": true,
+        "source": "Original example authored for this project"
+      }
+    },
+    "source_records": [
+      {
+        "traditional": "奶茶",
+        "simplified": "奶茶",
+        "source_pinyin": "nai3 cha2",
+        "jyutping": "naai5 caa4",
+        "gloss": "",
+        "source_file": "cccedict-canto-readings-150923.txt"
+      }
+    ],
+    "provenance": "Newly curated reconstruction entry, with original authored examples; not recovered original curriculum membership",
+    "dictionary_license": "CC BY-SA 3.0; retain Pleco / CC-CEDICT notices for source-derived dictionary material"
+  },
+  {
+    "id": "hk-16",
+    "cantonese_traditional": "凍檸茶",
+    "jyutping": "dung3 ling4 caa4",
+    "mandarin_simplified": "冰柠檬茶",
+    "pinyin": "bīng níng méng chá",
+    "numeric": "bing1 ning2 meng2 cha2",
+    "english": "iced lemon tea",
+    "theme": "food",
+    "examples": {
+      "cantonese": {
+        "text": "唔該，畀杯凍檸茶我。",
+        "jyutping": "m4 goi1 bei2 bui1 dung3 ling4 caa4 ngo5",
+        "english": "A cup of iced lemon tea, please.",
+        "authored": true,
+        "source": "Original example authored for this project"
+      },
+      "mandarin": {
+        "text": "请给我一杯冰柠檬茶。",
+        "pinyin": "qǐng gěi wǒ yī bēi bīng níng méng chá",
+        "numeric": "qing3 gei3 wo3 yi1 bei1 bing1 ning2 meng2 cha2",
+        "english": "A cup of iced lemon tea, please.",
+        "authored": true,
+        "source": "Original example authored for this project"
+      }
+    },
+    "source_records": [
+      {
+        "traditional": "凍檸茶",
+        "simplified": "冻柠茶",
+        "source_pinyin": "dong4 ning2 cha2",
+        "jyutping": "dung3 ling4 caa4",
+        "gloss": "/iced lemon tea/",
+        "source_file": "cccanto-webdist.txt"
+      }
+    ],
+    "provenance": "Newly curated reconstruction entry, with original authored examples; not recovered original curriculum membership",
+    "dictionary_license": "CC BY-SA 3.0; retain Pleco / CC-CEDICT notices for source-derived dictionary material"
+  },
+  {
+    "id": "hk-17",
+    "cantonese_traditional": "茶餐廳",
+    "jyutping": "caa4 caan1 teng1",
+    "mandarin_simplified": "茶餐厅",
+    "pinyin": "chá cān tīng",
+    "numeric": "cha2 can1 ting1",
+    "english": "a Hong Kong style cafe",
+    "theme": "food",
+    "examples": {
+      "cantonese": {
+        "text": "我哋去茶餐廳食飯。",
+        "jyutping": "ngo5 dei6 heoi3 caa4 caan1 teng1 sik6 faan6",
+        "english": "We're going to a Hong Kong style cafe to eat.",
+        "authored": true,
+        "source": "Original example authored for this project"
+      },
+      "mandarin": {
+        "text": "我们去茶餐厅吃饭。",
+        "pinyin": "wǒ men qù chá cān tīng chī fàn",
+        "numeric": "wo3 men5 qu4 cha2 can1 ting1 chi1 fan4",
+        "english": "We're going to a Hong Kong style cafe to eat.",
+        "authored": true,
+        "source": "Original example authored for this project"
+      }
+    },
+    "source_records": [
+      {
+        "traditional": "茶餐廳",
+        "simplified": "茶餐厅",
+        "source_pinyin": "cha2 can1 ting1",
+        "jyutping": "caa4 caan1 teng1",
+        "gloss": "/a café which serves food/",
+        "source_file": "cccanto-webdist.txt"
+      }
+    ],
+    "provenance": "Newly curated reconstruction entry, with original authored examples; not recovered original curriculum membership",
+    "dictionary_license": "CC BY-SA 3.0; retain Pleco / CC-CEDICT notices for source-derived dictionary material"
+  },
+  {
+    "id": "hk-18",
+    "cantonese_traditional": "八達通",
+    "jyutping": "baat3 daat6 tung1",
+    "mandarin_simplified": "八达通",
+    "pinyin": "bā dá tōng",
+    "numeric": "ba1 da2 tong1",
+    "english": "Octopus payment card",
+    "theme": "transport",
+    "examples": {
+      "cantonese": {
+        "text": "我用八達通搭車。",
+        "jyutping": "ngo5 jung6 baat3 daat6 tung1 daap3 ce1",
+        "english": "I use my Octopus card for transport.",
+        "authored": true,
+        "source": "Original example authored for this project"
+      },
+      "mandarin": {
+        "text": "我用八达通坐车。",
+        "pinyin": "wǒ yòng bā dá tōng zuò chē",
+        "numeric": "wo3 yong4 ba1 da2 tong1 zuo4 che1",
+        "english": "I use my Octopus card for transport.",
+        "authored": true,
+        "source": "Original example authored for this project"
+      }
+    },
+    "source_records": [
+      {
+        "traditional": "八達通",
+        "simplified": "八达通",
+        "source_pinyin": "Ba1 da2 tong1",
+        "jyutping": "baat3 daat6 tung1",
+        "gloss": "",
+        "source_file": "cccedict-canto-readings-150923.txt"
+      }
+    ],
+    "provenance": "Newly curated reconstruction entry, with original authored examples; not recovered original curriculum membership",
+    "dictionary_license": "CC BY-SA 3.0; retain Pleco / CC-CEDICT notices for source-derived dictionary material",
+    "note": "Hong Kong payment-card name, not a generic transport pass."
+  },
+  {
+    "id": "hk-19",
+    "cantonese_traditional": "港鐵",
+    "jyutping": "gong2 tit3",
+    "mandarin_simplified": "港铁",
+    "pinyin": "gǎng tiě",
+    "numeric": "gang3 tie3",
+    "english": "Hong Kong's MTR railway",
+    "theme": "transport",
+    "examples": {
+      "cantonese": {
+        "text": "我搭港鐵返屋企。",
+        "jyutping": "ngo5 daap3 gong2 tit3 faan1 uk1 kei2",
+        "english": "I take the MTR home.",
+        "authored": true,
+        "source": "Original example authored for this project"
+      },
+      "mandarin": {
+        "text": "我坐港铁回家。",
+        "pinyin": "wǒ zuò gǎng tiě huí jiā",
+        "numeric": "wo3 zuo4 gang3 tie3 hui2 jia1",
+        "english": "I take the MTR home.",
+        "authored": true,
+        "source": "Original example authored for this project"
+      }
+    },
+    "source_records": [
+      {
+        "traditional": "港鐵",
+        "simplified": "港铁",
+        "source_pinyin": "Gang3 tie3",
+        "jyutping": "gong2 tit3",
+        "gloss": "",
+        "source_file": "cccedict-canto-readings-150923.txt"
+      }
+    ],
+    "provenance": "Newly curated reconstruction entry, with original authored examples; not recovered original curriculum membership",
+    "dictionary_license": "CC BY-SA 3.0; retain Pleco / CC-CEDICT notices for source-derived dictionary material",
+    "note": "Hong Kong's MTR brand; not a translation of every city's subway."
+  },
+  {
+    "id": "hk-20",
+    "cantonese_traditional": "巴士",
+    "jyutping": "baa1 si2",
+    "mandarin_simplified": "公交车",
+    "pinyin": "gōng jiāo chē",
+    "numeric": "gong1 jiao1 che1",
+    "english": "bus",
+    "theme": "transport",
+    "examples": {
+      "cantonese": {
+        "text": "巴士嚟咗。",
+        "jyutping": "baa1 si2 lai4 zo2",
+        "english": "The bus is here.",
+        "authored": true,
+        "source": "Original example authored for this project"
+      },
+      "mandarin": {
+        "text": "公交车来了。",
+        "pinyin": "gōng jiāo chē lái le",
+        "numeric": "gong1 jiao1 che1 lai2 le5",
+        "english": "The bus is here.",
+        "authored": true,
+        "source": "Original example authored for this project"
+      }
+    },
+    "source_records": [
+      {
+        "traditional": "巴士",
+        "simplified": "巴士",
+        "source_pinyin": "ba1 shi4",
+        "jyutping": "baa1 si2",
+        "gloss": "",
+        "source_file": "cccedict-canto-readings-150923.txt"
+      }
+    ],
+    "provenance": "Newly curated reconstruction entry, with original authored examples; not recovered original curriculum membership",
+    "dictionary_license": "CC BY-SA 3.0; retain Pleco / CC-CEDICT notices for source-derived dictionary material"
+  },
+  {
+    "id": "hk-21",
+    "cantonese_traditional": "小巴",
+    "jyutping": "siu2 baa1",
+    "mandarin_simplified": "小巴",
+    "pinyin": "xiǎo bā",
+    "numeric": "xiao3 ba1",
+    "english": "minibus",
+    "theme": "transport",
+    "examples": {
+      "cantonese": {
+        "text": "我哋搭小巴去市場。",
+        "jyutping": "ngo5 dei6 daap3 siu2 baa1 heoi3 si5 coeng4",
+        "english": "We're taking a minibus to the market.",
+        "authored": true,
+        "source": "Original example authored for this project"
+      },
+      "mandarin": {
+        "text": "我们坐小巴去市场。",
+        "pinyin": "wǒ men zuò xiǎo bā qù shì chǎng",
+        "numeric": "wo3 men5 zuo4 xiao3 ba1 qu4 shi4 chang3",
+        "english": "We're taking a minibus to the market.",
+        "authored": true,
+        "source": "Original example authored for this project"
+      }
+    },
+    "source_records": [
+      {
+        "traditional": "小巴",
+        "simplified": "小巴",
+        "source_pinyin": "xiao3 ba1",
+        "jyutping": "siu2 baa1",
+        "gloss": "",
+        "source_file": "cccedict-canto-readings-150923.txt"
+      }
+    ],
+    "provenance": "Newly curated reconstruction entry, with original authored examples; not recovered original curriculum membership",
+    "dictionary_license": "CC BY-SA 3.0; retain Pleco / CC-CEDICT notices for source-derived dictionary material"
+  },
+  {
+    "id": "hk-22",
+    "cantonese_traditional": "的士",
+    "jyutping": "dik1 si2",
+    "mandarin_simplified": "出租车",
+    "pinyin": "chū zū chē",
+    "numeric": "chu1 zu1 che1",
+    "english": "taxi",
+    "theme": "transport",
+    "examples": {
+      "cantonese": {
+        "text": "我想搭的士返酒店。",
+        "jyutping": "ngo5 soeng2 daap3 dik1 si2 faan1 zau2 dim3",
+        "english": "I'd like to take a taxi back to the hotel.",
+        "authored": true,
+        "source": "Original example authored for this project"
+      },
+      "mandarin": {
+        "text": "我想坐出租车回酒店。",
+        "pinyin": "wǒ xiǎng zuò chū zū chē huí jiǔ diàn",
+        "numeric": "wo3 xiang3 zuo4 chu1 zu1 che1 hui2 jiu3 dian4",
+        "english": "I'd like to take a taxi back to the hotel.",
+        "authored": true,
+        "source": "Original example authored for this project"
+      }
+    },
+    "source_records": [
+      {
+        "traditional": "的士",
+        "simplified": "的士",
+        "source_pinyin": "di1 shi4",
+        "jyutping": "dik1 si2",
+        "gloss": "",
+        "source_file": "cccedict-canto-readings-150923.txt"
+      }
+    ],
+    "provenance": "Newly curated reconstruction entry, with original authored examples; not recovered original curriculum membership",
+    "dictionary_license": "CC BY-SA 3.0; retain Pleco / CC-CEDICT notices for source-derived dictionary material"
+  },
+  {
+    "id": "hk-23",
+    "cantonese_traditional": "埋單",
+    "jyutping": "maai4 daan1",
+    "mandarin_simplified": "结账",
+    "pinyin": "jié zhàng",
+    "numeric": "jie2 zhang4",
+    "english": "pay the bill",
+    "theme": "food",
+    "examples": {
+      "cantonese": {
+        "text": "唔該，埋單。",
+        "jyutping": "m4 goi1 maai4 daan1",
+        "english": "The bill, please.",
+        "authored": true,
+        "source": "Original example authored for this project"
+      },
+      "mandarin": {
+        "text": "请结账。",
+        "pinyin": "qǐng jié zhàng",
+        "numeric": "qing3 jie2 zhang4",
+        "english": "The bill, please.",
+        "authored": true,
+        "source": "Original example authored for this project"
+      }
+    },
+    "source_records": [
+      {
+        "traditional": "埋單",
+        "simplified": "埋单",
+        "source_pinyin": "mai2 dan1",
+        "jyutping": "maai4 daan1",
+        "gloss": "/(slang) (a term of gang) to kill somebody/",
+        "source_file": "cccanto-webdist.txt"
+      },
+      {
+        "traditional": "埋單",
+        "simplified": "埋单",
+        "source_pinyin": "mai2 dan1",
+        "jyutping": "maai4 daan1",
+        "gloss": "",
+        "source_file": "cccedict-canto-readings-150923.txt"
+      }
+    ],
+    "provenance": "Newly curated reconstruction entry, with original authored examples; not recovered original curriculum membership",
+    "dictionary_license": "CC BY-SA 3.0; retain Pleco / CC-CEDICT notices for source-derived dictionary material",
+    "note": "Selected restaurant bill/payment sense only. A historical CC-Canto entry has an unrelated slang sense; that sense is excluded."
+  },
+  {
+    "id": "hk-24",
+    "cantonese_traditional": "睇戲",
+    "jyutping": "tai2 hei3",
+    "mandarin_simplified": "看电影",
+    "pinyin": "kàn diàn yǐng",
+    "numeric": "kan4 dian4 ying3",
+    "english": "watch a movie",
+    "theme": "daily life",
+    "examples": {
+      "cantonese": {
+        "text": "今晚一齊去睇戲啦。",
+        "jyutping": "gam1 maan5 jat1 cai4 heoi3 tai2 hei3 laa1",
+        "english": "Let's see a movie together tonight.",
+        "authored": true,
+        "source": "Original example authored for this project"
+      },
+      "mandarin": {
+        "text": "今晚一起去看电影吧。",
+        "pinyin": "jīn wǎn yī qǐ qù kàn diàn yǐng ba",
+        "numeric": "jin1 wan3 yi1 qi3 qu4 kan4 dian4 ying3 ba5",
+        "english": "Let's see a movie together tonight.",
+        "authored": true,
+        "source": "Original example authored for this project"
+      }
+    },
+    "source_records": [
+      {
+        "traditional": "睇戲",
+        "simplified": "睇戏",
+        "source_pinyin": "di4 xi4",
+        "jyutping": "tai2 hei3",
+        "gloss": "/watching movies/",
+        "source_file": "cccanto-webdist.txt"
+      }
+    ],
+    "provenance": "Newly curated reconstruction entry, with original authored examples; not recovered original curriculum membership",
+    "dictionary_license": "CC BY-SA 3.0; retain Pleco / CC-CEDICT notices for source-derived dictionary material",
+    "note": "Selected watch-a-movie sense; the expression can also refer to watching a play/performance."
+  },
+  {
+    "id": "hk-25",
+    "cantonese_traditional": "食飯",
+    "jyutping": "sik6 faan6",
+    "mandarin_simplified": "吃饭",
+    "pinyin": "chī fàn",
+    "numeric": "chi1 fan4",
+    "english": "have a meal",
+    "theme": "food",
+    "examples": {
+      "cantonese": {
+        "text": "我哋一齊食飯啦。",
+        "jyutping": "ngo5 dei6 jat1 cai4 sik6 faan6 laa1",
+        "english": "Let's eat together.",
+        "authored": true,
+        "source": "Original example authored for this project"
+      },
+      "mandarin": {
+        "text": "我们一起吃饭吧。",
+        "pinyin": "wǒ men yī qǐ chī fàn ba",
+        "numeric": "wo3 men5 yi1 qi3 chi1 fan4 ba5",
+        "english": "Let's eat together.",
+        "authored": true,
+        "source": "Original example authored for this project"
+      }
+    },
+    "source_records": [
+      {
+        "traditional": "食飯",
+        "simplified": "食饭",
+        "source_pinyin": "shi2 fan4",
+        "jyutping": "sik6 faan6",
+        "gloss": "/to have dinner;to have a meal/",
+        "source_file": "cccanto-webdist.txt"
+      },
+      {
+        "traditional": "食飯",
+        "simplified": "食饭",
+        "source_pinyin": "shi2 fan4",
+        "jyutping": "sik6 faan6",
+        "gloss": "/to have a meal/",
+        "source_file": "cccanto-webdist.txt"
+      }
+    ],
+    "provenance": "Newly curated reconstruction entry, with original authored examples; not recovered original curriculum membership",
+    "dictionary_license": "CC BY-SA 3.0; retain Pleco / CC-CEDICT notices for source-derived dictionary material"
+  },
+  {
+    "id": "hk-26",
+    "cantonese_traditional": "瞓覺",
+    "jyutping": "fan3 gaau3",
+    "mandarin_simplified": "睡觉",
+    "pinyin": "shuì jiào",
+    "numeric": "shui4 jiao4",
+    "english": "sleep",
+    "theme": "daily life",
+    "examples": {
+      "cantonese": {
+        "text": "我想早啲瞓覺。",
+        "jyutping": "ngo5 soeng2 zou2 di1 fan3 gaau3",
+        "english": "I want to go to bed earlier.",
+        "authored": true,
+        "source": "Original example authored for this project"
+      },
+      "mandarin": {
+        "text": "我想早点睡觉。",
+        "pinyin": "wǒ xiǎng zǎo diǎn shuì jiào",
+        "numeric": "wo3 xiang3 zao3 dian3 shui4 jiao4",
+        "english": "I want to go to bed earlier.",
+        "authored": true,
+        "source": "Original example authored for this project"
+      }
+    },
+    "source_records": [
+      {
+        "traditional": "瞓覺",
+        "simplified": "瞓觉",
+        "source_pinyin": "xun4 jiao4",
+        "jyutping": "fan3 gaau3",
+        "gloss": "/sleep/",
+        "source_file": "cccanto-webdist.txt"
+      },
+      {
+        "traditional": "瞓覺",
+        "simplified": "瞓觉",
+        "source_pinyin": "xun4 jiao4",
+        "jyutping": "fan3 gaau3",
+        "gloss": "",
+        "source_file": "cccedict-canto-readings-150923.txt"
+      }
+    ],
+    "provenance": "Newly curated reconstruction entry, with original authored examples; not recovered original curriculum membership",
+    "dictionary_license": "CC BY-SA 3.0; retain Pleco / CC-CEDICT notices for source-derived dictionary material"
+  },
+  {
+    "id": "hk-27",
+    "cantonese_traditional": "返工",
+    "jyutping": "faan1 gung1",
+    "mandarin_simplified": "上班",
+    "pinyin": "shàng bān",
+    "numeric": "shang4 ban1",
+    "english": "go to work",
+    "theme": "daily life",
+    "examples": {
+      "cantonese": {
+        "text": "我聽日要返工。",
+        "jyutping": "ngo5 ting1 jat6 jiu3 faan1 gung1",
+        "english": "I have to go to work tomorrow.",
+        "authored": true,
+        "source": "Original example authored for this project"
+      },
+      "mandarin": {
+        "text": "我明天要上班。",
+        "pinyin": "wǒ míng tiān yào shàng bān",
+        "numeric": "wo3 ming2 tian1 yao4 shang4 ban1",
+        "english": "I have to go to work tomorrow.",
+        "authored": true,
+        "source": "Original example authored for this project"
+      }
+    },
+    "source_records": [
+      {
+        "traditional": "返工",
+        "simplified": "返工",
+        "source_pinyin": "fan3 gong1",
+        "jyutping": "faan1 gung1",
+        "gloss": "/to go to work/",
+        "source_file": "cccanto-webdist.txt"
+      }
+    ],
+    "provenance": "Newly curated reconstruction entry, with original authored examples; not recovered original curriculum membership",
+    "dictionary_license": "CC BY-SA 3.0; retain Pleco / CC-CEDICT notices for source-derived dictionary material"
+  },
+  {
+    "id": "hk-28",
+    "cantonese_traditional": "返學",
+    "jyutping": "faan1 hok6",
+    "mandarin_simplified": "上学",
+    "pinyin": "shàng xué",
+    "numeric": "shang4 xue2",
+    "english": "go to school",
+    "theme": "daily life",
+    "examples": {
+      "cantonese": {
+        "text": "佢每日都要返學。",
+        "jyutping": "keoi5 mui5 jat6 dou1 jiu3 faan1 hok6",
+        "english": "He has to go to school every day.",
+        "authored": true,
+        "source": "Original example authored for this project"
+      },
+      "mandarin": {
+        "text": "他每天都要上学。",
+        "pinyin": "tā měi tiān dōu yào shàng xué",
+        "numeric": "ta1 mei3 tian1 dou1 yao4 shang4 xue2",
+        "english": "He has to go to school every day.",
+        "authored": true,
+        "source": "Original example authored for this project"
+      }
+    },
+    "source_records": [
+      {
+        "traditional": "返學",
+        "simplified": "返学",
+        "source_pinyin": "fan3 xue2",
+        "jyutping": "faan1 hok6",
+        "gloss": "/(verb) to go to school/",
+        "source_file": "cccanto-webdist.txt"
+      }
+    ],
+    "provenance": "Newly curated reconstruction entry, with original authored examples; not recovered original curriculum membership",
+    "dictionary_license": "CC BY-SA 3.0; retain Pleco / CC-CEDICT notices for source-derived dictionary material",
+    "note": "Cantonese 佢 is gender-neutral; the authored example uses a male referent in its Mandarin/English translation."
+  },
+  {
+    "id": "hk-29",
+    "cantonese_traditional": "屋企",
+    "jyutping": "uk1 kei2",
+    "mandarin_simplified": "家",
+    "pinyin": "jiā",
+    "numeric": "jia1",
+    "english": "home",
+    "theme": "daily life",
+    "examples": {
+      "cantonese": {
+        "text": "我今日留喺屋企。",
+        "jyutping": "ngo5 gam1 jat6 lau4 hai2 uk1 kei2",
+        "english": "I'm staying at home today.",
+        "authored": true,
+        "source": "Original example authored for this project"
+      },
+      "mandarin": {
+        "text": "我今天待在家里。",
+        "pinyin": "wǒ jīn tiān dāi zài jiā lǐ",
+        "numeric": "wo3 jin1 tian1 dai1 zai4 jia1 li3",
+        "english": "I'm staying at home today.",
+        "authored": true,
+        "source": "Original example authored for this project"
+      }
+    },
+    "source_records": [
+      {
+        "traditional": "屋企",
+        "simplified": "屋企",
+        "source_pinyin": "wu1 qi3",
+        "jyutping": "uk1 kei2",
+        "gloss": "",
+        "source_file": "cccedict-canto-readings-150923.txt"
+      }
+    ],
+    "provenance": "Newly curated reconstruction entry, with original authored examples; not recovered original curriculum membership",
+    "dictionary_license": "CC BY-SA 3.0; retain Pleco / CC-CEDICT notices for source-derived dictionary material"
+  },
+  {
+    "id": "hk-30",
+    "cantonese_traditional": "而家",
+    "jyutping": "ji4 gaa1",
+    "mandarin_simplified": "现在",
+    "pinyin": "xiàn zài",
+    "numeric": "xian4 zai4",
+    "english": "now",
+    "theme": "time",
+    "examples": {
+      "cantonese": {
+        "text": "我而家喺香港。",
+        "jyutping": "ngo5 ji4 gaa1 hai2 hoeng1 gong2",
+        "english": "I'm in Hong Kong now.",
+        "authored": true,
+        "source": "Original example authored for this project"
+      },
+      "mandarin": {
+        "text": "我现在在香港。",
+        "pinyin": "wǒ xiàn zài zài xiāng gǎng",
+        "numeric": "wo3 xian4 zai4 zai4 xiang1 gang3",
+        "english": "I'm in Hong Kong now.",
+        "authored": true,
+        "source": "Original example authored for this project"
+      }
+    },
+    "source_records": [
+      {
+        "traditional": "而家",
+        "simplified": "而家",
+        "source_pinyin": "er2 jia1",
+        "jyutping": "ji4 gaa1",
+        "gloss": "/(adverb) right now; now; this moment/",
+        "source_file": "cccanto-webdist.txt"
+      }
+    ],
+    "provenance": "Newly curated reconstruction entry, with original authored examples; not recovered original curriculum membership",
+    "dictionary_license": "CC BY-SA 3.0; retain Pleco / CC-CEDICT notices for source-derived dictionary material"
+  },
+  {
+    "id": "hk-31",
+    "cantonese_traditional": "聽日",
+    "jyutping": "ting1 jat6",
+    "mandarin_simplified": "明天",
+    "pinyin": "míng tiān",
+    "numeric": "ming2 tian1",
+    "english": "tomorrow",
+    "theme": "time",
+    "examples": {
+      "cantonese": {
+        "text": "聽日見！",
+        "jyutping": "ting1 jat6 gin3",
+        "english": "See you tomorrow!",
+        "authored": true,
+        "source": "Original example authored for this project"
+      },
+      "mandarin": {
+        "text": "明天见！",
+        "pinyin": "míng tiān jiàn",
+        "numeric": "ming2 tian1 jian4",
+        "english": "See you tomorrow!",
+        "authored": true,
+        "source": "Original example authored for this project"
+      }
+    },
+    "source_records": [
+      {
+        "traditional": "聽日",
+        "simplified": "听日",
+        "source_pinyin": "ting1 ri4",
+        "jyutping": "ting1 jat6",
+        "gloss": "/(noun / adverb) tomorrow/",
+        "source_file": "cccanto-webdist.txt"
+      }
+    ],
+    "provenance": "Newly curated reconstruction entry, with original authored examples; not recovered original curriculum membership",
+    "dictionary_license": "CC BY-SA 3.0; retain Pleco / CC-CEDICT notices for source-derived dictionary material"
+  },
+  {
+    "id": "hk-32",
+    "cantonese_traditional": "尋日",
+    "jyutping": "cam4 jat6",
+    "mandarin_simplified": "昨天",
+    "pinyin": "zuó tiān",
+    "numeric": "zuo2 tian1",
+    "english": "yesterday",
+    "theme": "time",
+    "examples": {
+      "cantonese": {
+        "text": "我尋日買咗本書。",
+        "jyutping": "ngo5 cam4 jat6 maai5 zo2 bun2 syu1",
+        "english": "I bought a book yesterday.",
+        "authored": true,
+        "source": "Original example authored for this project"
+      },
+      "mandarin": {
+        "text": "我昨天买了一本书。",
+        "pinyin": "wǒ zuó tiān mǎi le yī běn shū",
+        "numeric": "wo3 zuo2 tian1 mai3 le5 yi1 ben3 shu1",
+        "english": "I bought a book yesterday.",
+        "authored": true,
+        "source": "Original example authored for this project"
+      }
+    },
+    "source_records": [
+      {
+        "traditional": "尋日",
+        "simplified": "寻日",
+        "source_pinyin": "xun2 ri4",
+        "jyutping": "cam4 jat6",
+        "gloss": "/(noun / adverb) yesterday/",
+        "source_file": "cccanto-webdist.txt"
+      }
+    ],
+    "provenance": "Newly curated reconstruction entry, with original authored examples; not recovered original curriculum membership",
+    "dictionary_license": "CC BY-SA 3.0; retain Pleco / CC-CEDICT notices for source-derived dictionary material"
+  },
+  {
+    "id": "hk-33",
+    "cantonese_traditional": "邊度",
+    "jyutping": "bin1 dou6",
+    "mandarin_simplified": "哪里",
+    "pinyin": "nǎ lǐ",
+    "numeric": "na3 li3",
+    "english": "where",
+    "theme": "questions",
+    "examples": {
+      "cantonese": {
+        "text": "你住喺邊度？",
+        "jyutping": "nei5 zyu6 hai2 bin1 dou6",
+        "english": "Where do you live?",
+        "authored": true,
+        "source": "Original example authored for this project"
+      },
+      "mandarin": {
+        "text": "你住在哪里？",
+        "pinyin": "nǐ zhù zài nǎ lǐ",
+        "numeric": "ni3 zhu4 zai4 na3 li3",
+        "english": "Where do you live?",
+        "authored": true,
+        "source": "Original example authored for this project"
+      }
+    },
+    "source_records": [
+      {
+        "traditional": "邊度",
+        "simplified": "边度",
+        "source_pinyin": "bian1 du4",
+        "jyutping": "bin1 dou6",
+        "gloss": "/where/",
+        "source_file": "cccanto-webdist.txt"
+      },
+      {
+        "traditional": "邊度",
+        "simplified": "边度",
+        "source_pinyin": "bian1 du4",
+        "jyutping": "bin1 dou6",
+        "gloss": "/(pronoun) where/",
+        "source_file": "cccanto-webdist.txt"
+      }
+    ],
+    "provenance": "Newly curated reconstruction entry, with original authored examples; not recovered original curriculum membership",
+    "dictionary_license": "CC BY-SA 3.0; retain Pleco / CC-CEDICT notices for source-derived dictionary material"
+  },
+  {
+    "id": "hk-34",
+    "cantonese_traditional": "乜嘢",
+    "jyutping": "mat1 je5",
+    "mandarin_simplified": "什么",
+    "pinyin": "shén me",
+    "numeric": "shen2 me5",
+    "english": "what",
+    "theme": "questions",
+    "examples": {
+      "cantonese": {
+        "text": "你想食乜嘢？",
+        "jyutping": "nei5 soeng2 sik6 mat1 je5",
+        "english": "What would you like to eat?",
+        "authored": true,
+        "source": "Original example authored for this project"
+      },
+      "mandarin": {
+        "text": "你想吃什么？",
+        "pinyin": "nǐ xiǎng chī shén me",
+        "numeric": "ni3 xiang3 chi1 shen2 me5",
+        "english": "What would you like to eat?",
+        "authored": true,
+        "source": "Original example authored for this project"
+      }
+    },
+    "source_records": [
+      {
+        "traditional": "乜嘢",
+        "simplified": "乜嘢",
+        "source_pinyin": "mie1 ye3",
+        "jyutping": "mat1 je5",
+        "gloss": "",
+        "source_file": "cccedict-canto-readings-150923.txt"
+      }
+    ],
+    "provenance": "Newly curated reconstruction entry, with original authored examples; not recovered original curriculum membership",
+    "dictionary_license": "CC BY-SA 3.0; retain Pleco / CC-CEDICT notices for source-derived dictionary material"
+  },
+  {
+    "id": "hk-35",
+    "cantonese_traditional": "幾多",
+    "jyutping": "gei2 do1",
+    "mandarin_simplified": "多少",
+    "pinyin": "duō shao",
+    "numeric": "duo1 shao5",
+    "english": "how much; how many",
+    "theme": "questions",
+    "examples": {
+      "cantonese": {
+        "text": "呢個幾多錢？",
+        "jyutping": "ni1 go3 gei2 do1 cin2",
+        "english": "How much is this?",
+        "authored": true,
+        "source": "Original example authored for this project"
+      },
+      "mandarin": {
+        "text": "这个多少钱？",
+        "pinyin": "zhè ge duō shao qián",
+        "numeric": "zhe4 ge5 duo1 shao5 qian2",
+        "english": "How much is this?",
+        "authored": true,
+        "source": "Original example authored for this project"
+      }
+    },
+    "source_records": [
+      {
+        "traditional": "幾多",
+        "simplified": "几多",
+        "source_pinyin": "ji3 duo1",
+        "jyutping": "gei2 do1",
+        "gloss": "/(slang) how much; how many?/",
+        "source_file": "cccanto-webdist.txt"
+      }
+    ],
+    "provenance": "Newly curated reconstruction entry, with original authored examples; not recovered original curriculum membership",
+    "dictionary_license": "CC BY-SA 3.0; retain Pleco / CC-CEDICT notices for source-derived dictionary material"
+  },
+  {
+    "id": "hk-36",
+    "cantonese_traditional": "鍾意",
+    "jyutping": "zung1 ji3",
+    "mandarin_simplified": "喜欢",
+    "pinyin": "xǐ huan",
+    "numeric": "xi3 huan5",
+    "english": "like",
+    "theme": "daily life",
+    "examples": {
+      "cantonese": {
+        "text": "我鍾意飲奶茶。",
+        "jyutping": "ngo5 zung1 ji3 jam2 naai5 caa4",
+        "english": "I like drinking milk tea.",
+        "authored": true,
+        "source": "Original example authored for this project"
+      },
+      "mandarin": {
+        "text": "我喜欢喝奶茶。",
+        "pinyin": "wǒ xǐ huan hē nǎi chá",
+        "numeric": "wo3 xi3 huan5 he1 nai3 cha2",
+        "english": "I like drinking milk tea.",
+        "authored": true,
+        "source": "Original example authored for this project"
+      }
+    },
+    "source_records": [
+      {
+        "traditional": "鍾意",
+        "simplified": "钟意",
+        "source_pinyin": "zhong1 yi4",
+        "jyutping": "zung1 ji3",
+        "gloss": "/to like/",
+        "source_file": "cccanto-webdist.txt"
+      }
+    ],
+    "provenance": "Newly curated reconstruction entry, with original authored examples; not recovered original curriculum membership",
+    "dictionary_license": "CC BY-SA 3.0; retain Pleco / CC-CEDICT notices for source-derived dictionary material"
+  },
+  {
+    "id": "hk-37",
+    "cantonese_traditional": "我哋",
+    "jyutping": "ngo5 dei6",
+    "mandarin_simplified": "我们",
+    "pinyin": "wǒ men",
+    "numeric": "wo3 men5",
+    "english": "we; us",
+    "theme": "people",
+    "examples": {
+      "cantonese": {
+        "text": "我哋一齊去香港。",
+        "jyutping": "ngo5 dei6 jat1 cai4 heoi3 hoeng1 gong2",
+        "english": "We're going to Hong Kong together.",
+        "authored": true,
+        "source": "Original example authored for this project"
+      },
+      "mandarin": {
+        "text": "我们一起去香港。",
+        "pinyin": "wǒ men yī qǐ qù xiāng gǎng",
+        "numeric": "wo3 men5 yi1 qi3 qu4 xiang1 gang3",
+        "english": "We're going to Hong Kong together.",
+        "authored": true,
+        "source": "Original example authored for this project"
+      }
+    },
+    "source_records": [
+      {
+        "traditional": "我哋",
+        "simplified": "我哋",
+        "source_pinyin": "wo3 di4",
+        "jyutping": "ngo5 dei6",
+        "gloss": "/(pronoun) we; us/",
+        "source_file": "cccanto-webdist.txt"
+      }
+    ],
+    "provenance": "Newly curated reconstruction entry, with original authored examples; not recovered original curriculum membership",
+    "dictionary_license": "CC BY-SA 3.0; retain Pleco / CC-CEDICT notices for source-derived dictionary material"
+  },
+  {
+    "id": "hk-38",
+    "cantonese_traditional": "你哋",
+    "jyutping": "nei5 dei6",
+    "mandarin_simplified": "你们",
+    "pinyin": "nǐ men",
+    "numeric": "ni3 men5",
+    "english": "you: plural",
+    "theme": "people",
+    "examples": {
+      "cantonese": {
+        "text": "你哋食咗飯未？",
+        "jyutping": "nei5 dei6 sik6 zo2 faan6 mei6",
+        "english": "Have you all eaten yet?",
+        "authored": true,
+        "source": "Original example authored for this project"
+      },
+      "mandarin": {
+        "text": "你们吃饭了吗？",
+        "pinyin": "nǐ men chī fàn le ma",
+        "numeric": "ni3 men5 chi1 fan4 le5 ma5",
+        "english": "Have you all eaten yet?",
+        "authored": true,
+        "source": "Original example authored for this project"
+      }
+    },
+    "source_records": [
+      {
+        "traditional": "你哋",
+        "simplified": "你哋",
+        "source_pinyin": "ni3 di4",
+        "jyutping": "nei5 dei6",
+        "gloss": "/(pronoun – plural) you/",
+        "source_file": "cccanto-webdist.txt"
+      }
+    ],
+    "provenance": "Newly curated reconstruction entry, with original authored examples; not recovered original curriculum membership",
+    "dictionary_license": "CC BY-SA 3.0; retain Pleco / CC-CEDICT notices for source-derived dictionary material"
+  }
+]

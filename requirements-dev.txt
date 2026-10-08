@@ -1,0 +1,7 @@
+-r requirements.txt
+flet-cli==1.0.3
+pytest>=8.0
+pypinyin==0.55.0
+opencc-python-reimplemented==0.1.7
+fonttools>=4.0
+brotli>=1.0

@@ -1,0 +1,30 @@
+[project]
+name = "first1000"
+version = "0.1.0"
+description = "Character-first Mandarin and Cantonese practice, built with Python and Flet."
+requires-python = ">=3.10"
+dependencies = ["flet==1.0.3"]
+
+[project.optional-dependencies]
+dev = ["flet-cli==1.0.3", "flet-web==1.0.3", "pytest>=8.0"]
+data = ["pypinyin==0.55.0", "opencc-python-reimplemented==0.1.7", "fonttools>=4.0", "brotli>=1.0"]
+
+[tool.flet]
+org = "org.first1000"
+product = "First 1000"
+company = "First 1000"
+copyright = "First 1000 contributors; see THIRD_PARTY.md for content attribution."
+
+[tool.flet.app]
+path = "src"
+
+[tool.flet.web]
+route_url_strategy = "hash"
+renderer = "canvaskit"
+pwa_background_color = "#F6F5F0"
+pwa_theme_color = "#15756C"
+pwa_short_name = "First 1000"
+
+[tool.pytest.ini_options]
+pythonpath = ["src"]
+testpaths = ["tests"]

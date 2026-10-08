@@ -1,0 +1,141 @@
+{
+  "downloaded_at": "2026-10-08",
+  "repositories": {
+    "ruddfawcett/hanziDB.csv": {
+      "commit": "3e9f908d25f70674862343b201f6b641a36cd226",
+      "committed_at": "2023-10-19T03:47:13Z"
+    },
+    "drkameleon/complete-hsk-vocabulary": {
+      "commit": "7ac65bf1a6387d35f1ade478906172a19311c7f9",
+      "committed_at": "2026-03-23T14:02:13Z"
+    },
+    "clem109/hsk-vocabulary": {
+      "commit": "f3dc9d12ae00d04fa3676b0bd4c43cd58de2c264",
+      "committed_at": "2019-10-29T09:12:25Z"
+    }
+  },
+  "files": {
+    "Unihan.zip": {
+      "bytes": 8340649,
+      "sha256": "4c93ea9c1f636451729a840978f1667a53886af37ba854fdcce109721c63d43e"
+    },
+    "Unihan_Readings.txt": {
+      "bytes": 8844571,
+      "sha256": "9d39995b5de714e8ce93716ed5d15eaa0792d68e407cdf8a0add2893b8f4150b"
+    },
+    "Unihan_Variants.txt": {
+      "bytes": 726700,
+      "sha256": "4ccfd34b08ac7b9c14353f6668ba43e3796d85c4cdce7952b635be16015aafa2"
+    },
+    "_about.txt": {
+      "bytes": 1441,
+      "sha256": "262eaba34251ebb2e7c5d514c5a2b856fe6eec058cee957d22a6c6129947a228"
+    },
+    "cc-canto-download.html": {
+      "bytes": 4325,
+      "sha256": "b8dccb10da53ccd0ec01ac898c0f686fb753caad91950cd72a8216798a677125"
+    },
+    "cccanto-170202.zip": {
+      "bytes": 1282537,
+      "sha256": "0cc9e600a19c02405064d6d227d96563c09da1a0af1c7717508c0f231028af27"
+    },
+    "cccanto-webdist.txt": {
+      "bytes": 3446667,
+      "sha256": "95392fbfe3c1690dc5b1460ad29ee451d17cad75935c00d5af2d18913f9bd940"
+    },
+    "cccedict-canto-readings-150923.txt": {
+      "bytes": 5328574,
+      "sha256": "93ecbd7b7d58741bb8205107c736632438bf42dc07042b4090a66ce765432b0b"
+    },
+    "cccedict-canto-readings-150923.zip": {
+      "bytes": 1874027,
+      "sha256": "f6d99991791f49aaf96d97b2838a3ba9e057e060a5a9e24311cf851f8f71a950"
+    },
+    "cmn-eng.zip": {
+      "bytes": 1386340,
+      "sha256": "d606361aa7312dcdfb15ef4fc51cb1e7ed8bc2dc608a7b192626cd36e8403106"
+    },
+    "cmn.txt": {
+      "bytes": 4565695,
+      "sha256": "d766002332a8f21099afd7427138d44f06bed7486a18f7f0f26f217092667d73"
+    },
+    "cmn_sentences_detailed.tsv.bz2": {
+      "bytes": 1724772,
+      "sha256": "934fdfad76366c1089d8aa4359d0cb57c03950375da8ab265ecb7bf5649ca4ba"
+    },
+    "hanzi_db.LICENSE": {
+      "bytes": 1069,
+      "sha256": "321fbc7640cdd947a44d17b9810e273a3ba7ac75e4d32ab1aee9adfa58bc122f"
+    },
+    "hanzi_db.csv": {
+      "bytes": 546552,
+      "sha256": "fde27fd1cdc78de4e924f68e1c2750c8a30964d25e5cc75478bb01631b7169cf"
+    },
+    "hsk-old-1.json": {
+      "bytes": 152873,
+      "sha256": "957709a39fcdddd8ef02adc438f2f47113548cf31421dbe986edae165973e295"
+    },
+    "hsk-old-2.json": {
+      "bytes": 155261,
+      "sha256": "f9c5203307fa1553e48a316c9a7bf4c285962244148a3756c57390203c0d95d0"
+    },
+    "hsk-old-3.json": {
+      "bytes": 272864,
+      "sha256": "7227715922a7b7c2bcaea4b904bc4e09d7683e9ff2290fb842d75dd422563e75"
+    },
+    "hsk-old-4.json": {
+      "bytes": 511899,
+      "sha256": "0e4ec38a9ce0614c2a1da5bdb861e603fe1b994fe84900918a766ca13f4e1e5b"
+    },
+    "hsk-original-1.json": {
+      "bytes": 29037,
+      "sha256": "63ebbe4aa1b8af45bc2bd135f804e0a958430186fda8ff65c31c2d87865a89c5"
+    },
+    "hsk-original-2.json": {
+      "bytes": 29463,
+      "sha256": "ff3eec98bb02678ad6ec0ab96843abf574caf837b6b4883c36a069ac4551cfca"
+    },
+    "hsk-original-3.json": {
+      "bytes": 55245,
+      "sha256": "92823c20766b05cb01a56dd341f32909f1f2a1125e2caaab2dde6f6016072649"
+    },
+    "hsk-original-4.json": {
+      "bytes": 110379,
+      "sha256": "fe3217e67103fe50b93872dd8990f3dd24541518944d9cc293dbfee249a127f5"
+    },
+    "hsk-original.LICENSE": {
+      "bytes": 1070,
+      "sha256": "989d544398807759987585ac443afad4fc6e25038711ee35aac0558de2ab330f"
+    },
+    "hsk.LICENSE": {
+      "bytes": 1075,
+      "sha256": "21094287f6e487f6978cf240c67603e4a0e9f341c6e732558d052feb44210c8f"
+    },
+    "unicode.LICENSE": {
+      "bytes": 1995,
+      "sha256": "e7a93b009565cfce55919a381437ac4db883e9da2126fa28b91d12732bc53d96"
+    },
+    "yue-eng.zip": {
+      "bytes": 166392,
+      "sha256": "8b86e613e51d51f7c9da4c2b9b04d51a29e4b19914a72afb7d046faa315aa439"
+    },
+    "yue.txt": {
+      "bytes": 545880,
+      "sha256": "e98df087848b762c9e85e99a01715f613fd9df258f397677e83305fce68f93cb"
+    },
+    "yue_sentences_detailed.tsv.bz2": {
+      "bytes": 1727046,
+      "sha256": "a275acc5b47590b6b5e38be5c71be6c1115ab0008e5f7d3e9811425ee875e869"
+    }
+  },
+  "notes": [
+    "These are reconstruction research inputs, not recovered original app files.",
+    "HSK source lists include 1200 records / 1193 unique spellings.",
+    "Keep intended HSK readings from original lists; drkameleon forms contain other dictionary senses.",
+    "ManyThings cmn/yue text attribution column must survive app preprocessing."
+  ],
+  "build_inputs": {
+    "hk-curated.json": "954bfdedd935dfee429a710ace2d8193676c353e41185d7cdf1da81caf572624",
+    "cantonese-overrides.json": "301d6f604e0dadf265b988a168191b71d1be46ee980d5dca902e5ef3df8924ca"
+  }
+}
