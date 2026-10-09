@@ -18,7 +18,9 @@ The user subsequently authorized generating a usable version. This project there
 
 ## Verification
 
-The practice rules and actual Flet control/handler flows passed **36 tests**, including eight combinations of phone/desktop widths, language, and script. Tests exercise full core/drill/matching/flashcard completion, trophy persistence, answer hiding, reading normalization, polyphonic answers, duplicate-character handling, eight distinct answer options, rejection of malformed backups, curriculum counts, and font coverage.
+The practice rules, actual Flet control/handler flows, and web-build regressions passed **46 tests**, including eight combinations of phone/desktop widths, language, and script. Tests exercise full core/drill/matching/flashcard completion, trophy persistence, answer hiding, reading normalization, polyphonic answers, duplicate-character handling, eight distinct answer options, rejection of malformed backups, curriculum counts, font coverage, and runtime URL resolution.
+
+The first reported web startup error was Flet 1.0.3's generated bare module path, `pyodide/pyodide.mjs`. Static builds now resolve this URL against `document.baseURI`, so module workers receive a valid absolute URL at both the website root and a GitHub Pages project path. The GitHub workflow uses this corrected build script, and distribution verification rejects an uncorrected module path. The generated JavaScript was evaluated for both paths in Node, and the packaged Pyodide runtime successfully started Python 3.12.7 and loaded micropip. Application code, vocabulary, categories, and progress identifiers were unchanged by this fix.
 
 The static package is checked against current source hashes, curriculum counts, pinned runtime dependency, custom fonts, and Pyodide/CanvasKit files. These checks do not establish rendered browser behavior. A managed browser preview was unavailable in this environment, so rendered visual QA, clipboard permissions, actual browser storage, and Chinese IME behavior need confirmation on the user's browser. The hosted deployment status is checked separately.
 

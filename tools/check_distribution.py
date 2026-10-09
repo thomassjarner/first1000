@@ -1,11 +1,12 @@
 """Check the built site's entrypoint, packaged source, fonts, and runtime."""
 from __future__ import annotations
 
-import hashlib
 import json
 import sys
 import tarfile
 from pathlib import Path
+
+from fix_web_paths import has_resolved_pyodide_url
 
 root=Path(__file__).resolve().parents[1]
 dist=Path(sys.argv[1] if len(sys.argv)>1 else root/"dist").resolve()
@@ -16,6 +17,7 @@ html=(dist/"index.html").read_text()
 assert 'flet.pyodide = true' in html, "Static Python runtime is not enabled"
 assert 'flet.pythonModuleName = "main"' in html, "Wrong Python entry point"
 assert 'flet.routeUrlStrategy="hash"' in html, "Static routes need hash mode"
+assert has_resolved_pyodide_url(html), "Pyodide module URL must resolve against document.baseURI; build with tools/build_web.py"
 assert (dist/"fonts/First1000Hanzi.otf").read_bytes()==(root/"src/assets/fonts/First1000Hanzi.otf").read_bytes()
 assert (dist/"fonts/Inter.ttf").read_bytes()==(root/"src/assets/fonts/Inter.ttf").read_bytes()
 with tarfile.open(dist/"app.tar.gz") as tar:

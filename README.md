@@ -61,11 +61,13 @@ Open **Progress → Copy / view progress backup**, copy the JSON, and save it in
 To make a static build yourself:
 
 ```sh
-flet publish . --python-version 3.12 --distpath dist --no-cdn --route-url-strategy hash
+python tools/build_web.py
 python -m http.server 8000 --directory dist
 ```
 
-Open `http://localhost:8000`. Serve the folder over HTTP; opening `index.html` as a local file will not run Python in the browser. A project hosted under a path such as `/first1000/` also needs `--base-url /first1000/` when publishing.
+Open `http://localhost:8000`. Serve the folder over HTTP; opening `index.html` as a local file will not run Python in the browser. A project hosted under a path such as `/first1000/` needs `python tools/build_web.py --base-url /first1000/`.
+
+Use the build script for static publishing. It resolves Flet 1.0.3's local Pyodide module URL against the site's base URL before checking the distribution. A raw `flet publish --no-cdn` build emits a bare module path that the browser cannot import.
 
 The static app runs Python through Pyodide. The first load downloads a Python/WebAssembly runtime and the Flet package, so allow it time to start. `--no-cdn` includes the runtime and CanvasKit in the website; Python package installation still needs network access on first load. This is not an offline guarantee.
 
