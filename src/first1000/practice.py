@@ -207,3 +207,51 @@ class MatchSession:
         result = Answer(left_id, correct, right_id, (left_id,))
         self.answers.append(result)
         return result
+
+
+class SentenceSession:
+    """Read a complete sentence and associate it with its English meaning."""
+    def __init__(self, entries, rng=None):
+        self.items = list({entry.id: entry for entry in entries if entry.kind == "sentence"}.values())
+        if len({entry.meaning for entry in self.items}) < 4:
+            raise ValueError("Select a situation containing at least four sentence meanings")
+        self.rng = rng or random.Random()
+        self.rng.shuffle(self.items)
+        self.index = 0
+        self.answers = []
+        self.pending = None
+        self._options = None
+
+    @property
+    def current(self):
+        return self.items[self.index]
+
+    @property
+    def finished(self):
+        return self.index == len(self.items)
+
+    @property
+    def correct_count(self):
+        return sum(answer.correct for answer in self.answers)
+
+    def options(self):
+        if self._options is None:
+            others = sorted({entry.meaning for entry in self.items} - {self.current.meaning})
+            self._options = [self.current.meaning, *self.rng.sample(others, 3)]
+            self.rng.shuffle(self._options)
+        return list(self._options)
+
+    def answer(self, value):
+        if self.pending is not None:
+            raise ValueError("Continue to the next sentence")
+        if value not in self.options():
+            raise ValueError("Choose one of the sentence meanings")
+        self.pending = Answer(self.current.id, value == self.current.meaning, value, (self.current.meaning,))
+        self.answers.append(self.pending)
+        return self.pending
+
+    def advance(self):
+        if self.pending is None:
+            raise ValueError("Choose a meaning first")
+        self.index += 1
+        self.pending, self._options = None, None

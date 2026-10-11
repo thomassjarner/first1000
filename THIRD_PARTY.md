@@ -20,3 +20,9 @@ The general dictionary includes the 1,000 separately labelled character records 
 The compiled vocabulary portions of `curriculum.json` are distributed under CC BY-SA 3.0. Tatoeba example records retain CC BY 2.0 FR; Unicode fields retain the Unicode notice. Application source code is separately MIT-licensed. Redistribution must keep these attributions, notices, and applicable share-alike terms for adapted dictionary content.
 
 Input SHA-256 checksums and source repository commits appear in `src/first1000/data/provenance.json`. The curated asset inputs are included in `tools/curated/`. The builder documents the required input filenames; it does not fetch data during app startup.
+
+## Version 0.2.0 additions
+
+The 48 paired situation sentences are original authored learning examples under CC BY-SA 3.0. Cantonese character selection reuses the existing attributed character readings and definitions. Its provisional order uses manually prioritized spoken essentials and occurrence counts in the bundled Cantonese examples and vocabulary; it is not an independent representative frequency corpus.
+
+The expanded Hanzi subset was made from NotoSansCJKhk-Regular.otf from the official notofonts/noto-cjk repository (Sans/OTF/TraditionalChineseHK), under the existing SIL OFL license bundled with the app. It preserves existing glyph coverage and adds the new sentence and character glyphs.

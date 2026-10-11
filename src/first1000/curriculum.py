@@ -99,6 +99,28 @@ class Curriculum:
         path = path or Path(__file__).with_name("data") / "curriculum.json"
         return cls(json.loads(path.read_text(encoding="utf-8")))
 
+    def add_everyday_content(self):
+        """Add new IDs without changing original categories or fingerprints."""
+        if hasattr(self, "cantonese_targets"):
+            return
+        payload = json.loads(Path(__file__).with_name("data").joinpath("everyday.json").read_text(encoding="utf-8"))
+        self.cantonese_targets = tuple(payload["cantonese_targets"])
+        for glyph, data in payload.get("characters", {}).items():
+            self.characters[glyph] = Character(glyph=glyph, **{**data, "pinyin": tuple(data["pinyin"]), "jyutping": tuple(data["jyutping"]), "target_ids": tuple(data.get("target_ids", []))})
+        for data in payload["entries"]:
+            entry = Entry(data)
+            self.entries[entry.id] = entry
+            self.entry_categories[entry.id] = []
+        for data in payload["categories"]:
+            cat = Category(**{**data, "entry_ids": tuple(data["entry_ids"])})
+            self.categories.append(cat)
+            self.category_map[cat.id] = cat
+            for entry_id in cat.entry_ids:
+                self.entry_categories[entry_id].append(cat)
+
+    def targets(self, language):
+        return getattr(self, "cantonese_targets", self.target_characters) if language == "cantonese" else self.target_characters
+
     def selected_entries(self, category_ids: Iterable[str]) -> list[Entry]:
         selected = set(category_ids)
         ids = dict.fromkeys(entry_id for category in self.categories if category.id in selected for entry_id in category.entry_ids)

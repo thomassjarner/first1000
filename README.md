@@ -2,6 +2,18 @@
 
 A character-first Mandarin and Cantonese learning app, written in Python with **Flet 1.0.3**. Learn in small sets, drill pronunciation, and earn a trophy by completing a fixed character-writing quiz without mistakes.
 
+## Changes in version 0.2.0
+
+Browse categories as a compact list, filter by topic or type, and sort by name, size, or unfinished trophies. Open a set and use Previous/Next to move through the filtered results. The dictionary is also a list; Details opens examples and attribution.
+
+**Sentences** opens 12 situations with 48 paired original Mandarin/spoken Cantonese examples, including paying the bill, ordering food, shopping, directions, transport, checking in, appointments, meeting people, making plans, asking for help, and feeling unwell. Choose a sentence's English meaning, then review its pronunciation.
+
+Cantonese has its own forty 25-character sets and a separate 1,000-character target list. Its order prioritizes spoken essentials, then character occurrence counts within the bundled Cantonese examples. This provisional curriculum order is not a representative general-language frequency ranking. Mandarin's original character sets remain unchanged, as do all original category fingerprints. Earlier Cantonese trophies and attempts remain saved and visible in Progress.
+
+In character drills, **Enter** checks an answer or reveals the reading when the field is empty; **Enter again** advances. A blank reveal counts as an incorrect attempt. Enter also works in choice mode. Traditional script and spoken-expression labels replace the Hong Kong framing in navigation; the original regional vocabulary remains available.
+
+The original content described below is retained; the new sets are additive. See [UPDATE_0.2.0.md](UPDATE_0.2.0.md) for migration and content notes.
+
 ## Start using it
 
 Python 3.12 is recommended. Download and extract this project, then open a terminal in its folder:
@@ -41,7 +53,7 @@ The command opens the app in a browser. Keep the terminal running while you use 
 - Character drilling with numbered Pinyin or Jyutping, or exactly eight multiple-choice options. The session uses each distinct displayed character once. Recorded alternative readings are accepted for polyphonic characters.
 - A six-pair character-to-meaning matching game, graded accuracy, session history, and progress backup/restore.
 
-Mandarin and Cantonese have separate scores and trophies. Simplified and traditional forms share a trophy within a language. Language and script switches are disabled during a practice session; dark mode is always available. Character practice may include extra characters introduced by themed words, while the progress goal remains the 1,000 target characters.
+Mandarin and Cantonese have separate scores and trophies. Simplified and traditional forms share a trophy within a language. Sentence meaning sessions record scores and history but do not award core trophies. Language and script switches are disabled during a practice session; dark mode is always available. Character practice may include extra characters introduced by themed words, while the progress goal remains the 1,000 target characters.
 
 Flashcard ratings are self-assessments and do not affect graded accuracy. Core/matching accuracy counts every attempt, including retries. Driller accuracy uses the first and only answer to each character.
 

@@ -9,18 +9,19 @@ from collections import Counter
 import flet as ft
 
 from .curriculum import Curriculum, Entry
-from .practice import CoreSession, DrillSession, MatchSession, normalize_reading
+from .practice import CoreSession, DrillSession, MatchSession, normalize_reading, SentenceSession
 from .progress import Progress
 from .storage import ProgressStore
 
 LIGHT = dict(bg="#F6F5F0", surface="#FFFFFF", ink="#202F2C", muted="#64746E", line="#DDE5DE", accent="#15756C", soft="#E6F2EA", red="#A52E37", redbg="#FCE8E9", green="#17683D", greenbg="#DDF4E5")
 DARK = dict(bg="#121D1B", surface="#1D2B27", ink="#E9F2EC", muted="#A9BAB1", line="#354740", accent="#7FD7BE", soft="#263E35", red="#FFAFB5", redbg="#4D272E", green="#9AE2B2", greenbg="#244633")
-MODE_NAMES = {"core": "Core quiz", "drill": "Character drill", "match": "Matching game", "flashcards": "Flashcards"}
+MODE_NAMES = {"core": "Core quiz", "drill": "Character drill", "match": "Matching game", "flashcards": "Flashcards", "sentence": "Sentence practice"}
 
 
 class App:
     def __init__(self, page: ft.Page, curriculum: Curriculum, preferences=None):
         self.ready = False
+        curriculum.add_everyday_content()
         self.page, self.curriculum = page, curriculum
         self.preferences = preferences or ft.SharedPreferences()
         self.progress_store = ProgressStore(self.preferences)
@@ -30,6 +31,7 @@ class App:
         self.selected: set[str] = {"core-01"}
         self.category_id = "core-01"
         self.category_query, self.category_kind, self.category_page = "", "all", 0
+        self.category_theme, self.category_sort = "all", "recommended"
         self.dictionary_query, self.dictionary_sort = "", "frequency"
         self.dictionary_category, self.dictionary_hsk, self.dictionary_page = "all", "all", 0
         self.drill_mode = "typed"
@@ -51,6 +53,7 @@ class App:
         self.page.theme = ft.Theme(font_family="Inter", color_scheme_seed=LIGHT["accent"])
         self.page.dark_theme = ft.Theme(font_family="Inter", color_scheme_seed=DARK["accent"])
         self.page.on_resize = self.on_resize
+        self.page.on_keyboard_event = self.on_keyboard
         self.page.add(self.root)
         self.breakpoint = self.narrow
 
@@ -72,7 +75,7 @@ class App:
 
     @property
     def active(self):
-        return self.screen in ("core", "drill", "match", "flashcards")
+        return self.screen in ("core", "drill", "match", "flashcards", "sentence")
 
     @property
     def language_label(self):
@@ -81,6 +84,8 @@ class App:
     async def initialize(self):
         self.progress = await self.progress_store.load()
         self.storage_error = self.progress_store.message
+        if self.language == "cantonese":
+            self.selected = {"cant-core-" + cid[-2:] if cid.startswith("core-") else cid for cid in self.selected}
         self.ready = True
         self.render()
 
@@ -115,6 +120,12 @@ class App:
             self.breakpoint = self.narrow
             self.render()
 
+    async def on_keyboard(self, event):
+        if getattr(event, "key", "") != "Enter" or any(getattr(event, key, False) for key in ("ctrl", "alt", "meta", "shift")):
+            return
+        if self.ready and self.screen == "drill" and self.drill_mode == "choice":
+            await self.action(self.submit_drill)()
+
     def text(self, value, size=16, muted=False, bold=False, hanzi=False, **kwargs):
         return ft.Text(str(value), size=size, color=self.colors["muted" if muted else "ink"],
                        font_family="Hanzi" if hanzi else "Inter", weight=ft.FontWeight.W_600 if bold else ft.FontWeight.W_400, **kwargs)
@@ -146,6 +157,14 @@ class App:
     async def set_switch(self, key, value):
         if self.active and key != "dark":
             return
+        if key == "language":
+            self.selected = {("cant-core-" + cid[-2:]) if value == "cantonese" and cid.startswith("core-") else ("core-" + cid[-2:]) if value == "mandarin" and cid.startswith("cant-core-") else cid for cid in self.selected}
+            if value == "cantonese" and self.category_id.startswith("core-"):
+                self.category_id = "cant-core-" + self.category_id[-2:]
+            elif value == "mandarin" and self.category_id.startswith("cant-core-"):
+                self.category_id = "core-" + self.category_id[-2:]
+            self.dictionary_category = "all"
+            self.category_kind, self.category_theme, self.category_page = "all", "all", 0
         self.progress.settings[key] = value
         await self.save()
 
@@ -156,17 +175,17 @@ class App:
         switches = ft.Row([
             ft.Switch(label="Dark", value=self.progress.settings["dark"], label_text_style=switch_style, on_change=self.event_action(self.set_switch, lambda e: ("dark", e.control.value))),
             ft.Switch(label="Cantonese", value=self.language == "cantonese", label_text_style=switch_style, disabled=self.active, on_change=self.event_action(self.set_switch, lambda e: ("language", "cantonese" if e.control.value else "mandarin"))),
-            ft.Switch(label="HK traditional", value=self.traditional, label_text_style=switch_style, disabled=self.active, on_change=self.event_action(self.set_switch, lambda e: ("traditional", e.control.value)))], wrap=True, spacing=6)
+            ft.Switch(label="Traditional", value=self.traditional, label_text_style=switch_style, disabled=self.active, on_change=self.event_action(self.set_switch, lambda e: ("traditional", e.control.value)))], wrap=True, spacing=6)
         nav = ft.Row([self.button(label, self.navigate, screen, primary=self.screen == screen) for label, screen in [
-            ("Home", "home"), ("Categories", "categories"), ("Dictionary", "dictionary"), ("Character driller", "drill_setup"), ("Progress", "progress")]], wrap=True, spacing=8)
+            ("Home", "home"), ("Categories", "categories"), ("Dictionary", "dictionary"), ("Character driller", "drill_setup"), ("Sentences", "sentence_setup"), ("Progress", "progress")]], wrap=True, spacing=8)
         return ft.Column([ft.Row([brand, switches], wrap=True, alignment=ft.MainAxisAlignment.SPACE_BETWEEN, run_spacing=14), nav,
-            ft.Row([self.tag(self.language_label), self.tag("HK traditional" if self.traditional else "Simplified")], wrap=True)], spacing=20)
+            ft.Row([self.tag(self.language_label), self.tag("Traditional" if self.traditional else "Simplified")], wrap=True)], spacing=20)
 
     def render(self):
         self.page.bgcolor = self.colors["bg"]
         self.page.theme_mode = ft.ThemeMode.DARK if self.progress.settings["dark"] else ft.ThemeMode.LIGHT
         builders = {"home": self.home, "categories": self.categories, "category": self.category_detail, "dictionary": self.dictionary,
-            "drill_setup": self.drill_setup, "core": self.core, "drill": self.drill, "match": self.match, "flashcards": self.flashcards, "progress": self.progress_view, "result": self.result_view}
+            "drill_setup": self.drill_setup, "core": self.core, "drill": self.drill, "match": self.match, "flashcards": self.flashcards, "progress": self.progress_view, "result": self.result_view, "sentence_setup": self.sentence_setup, "sentence": self.sentence}
         controls = [self.header()]
         if self.storage_error:
             controls.append(self.panel([self.text(self.storage_error, 13)], color=self.colors["redbg"], padding=14))
@@ -182,27 +201,50 @@ class App:
             self.tag("YOUR FIRST 1,000 CHARACTERS"),
             self.text("A thousand characters.\nOne small win at a time.", 32 if self.narrow else 46, bold=True),
             self.text("Bring your Mandarin and Cantonese back into your everyday life. Pick a small set, drill it, and earn a perfect-run trophy.", 16, muted=True),
-            ft.Row([self.button("Start a 25-character drill", self.start, "drill", ["core-01"], primary=True), self.button("Explore categories", self.navigate, "categories")], wrap=True),
+            ft.Row([self.button("Start a 25-character drill", self.start, "drill", ["cant-core-01" if self.language == "cantonese" else "core-01"], primary=True), self.button("Explore categories", self.navigate, "categories")], wrap=True),
             ft.Row([self.text("學" if self.traditional else "学", 72, hanzi=True), ft.Column([self.text("Characters take the lead.", 18, bold=True), self.text("Pronunciation appears when it helps you learn.", 13, muted=True)])], wrap=True)
         ], color=self.colors["soft"], padding=28)
         values = [(f'{summary["characters"]}/1000', "Characters practised"), (f'{summary["trophies"]}/{len(self.curriculum.categories)}', "Core trophies"),
                   ("—" if summary["accuracy"] is None else f'{summary["accuracy"]:.0%}', "Answer accuracy"), (str(summary["sessions"]), "Completed sessions")]
         stats = ft.ResponsiveRow([self.panel([self.text(value, 27, bold=True), self.text(label, 12, muted=True)], padding=18, col={"xs": 6, "md": 3}) for value, label in values], spacing=12, run_spacing=12)
         features = [
-            ("01", "Categories", "93 themed vocabulary sets and 40 character sets. Pick one or mix a few.", "categories"),
+            ("01", "Categories", "Browse situations, topics, and language-specific character sets. Pick one or mix a few.", "categories"),
             ("02", "General dictionary", "1,231 words and phrases, plus the 1,000 character cards. Search, sort, and read examples.", "dictionary"),
             ("03", "Character driller", "Type a tone-number reading or choose from eight answers. See each character once.", "drill_setup")]
         cards = ft.ResponsiveRow([self.panel([self.text(n, 14, muted=True, bold=True), self.text(title, 22, bold=True), self.text(detail, 14, muted=True), self.button("Open →", self.navigate, screen)], col={"xs":12,"md":4}) for n,title,detail,screen in features], spacing=12, run_spacing=12)
         return ft.Column([hero, stats, cards], spacing=20)
 
+    def visible_categories(self):
+        return [cat for cat in self.curriculum.categories if (cat.kind != "characters" if self.language == "cantonese" else cat.kind != "cantonese_characters")]
+
+    def category_title(self, cat):
+        return cat.title.replace("Hong Kong · ", "Everyday · ")
+
     def filtered_categories(self):
-        categories = self.curriculum.categories
+        categories = self.visible_categories()
         if self.category_kind != "all":
-            categories = [x for x in categories if x.kind == self.category_kind or (self.category_kind.isdigit() and x.hsk == int(self.category_kind))]
-        if self.category_query.strip():
-            query = self.category_query.strip().lower()
-            categories = [x for x in categories if query in (x.title + " " + x.description).lower() or any(query in self.curriculum.entries[y].text(self.language, self.traditional) for y in x.entry_ids)]
-        return categories
+            categories = [cat for cat in categories if cat.kind == self.category_kind or (self.category_kind == "characters" and cat.kind == "cantonese_characters") or (self.category_kind.isdigit() and cat.hsk == int(self.category_kind))]
+        if self.category_theme != "all":
+            categories = [cat for cat in categories if cat.theme == self.category_theme]
+        query = self.category_query.strip().lower()
+        if query:
+            categories = [cat for cat in categories if query in (self.category_title(cat) + " " + cat.theme + " " + cat.description).lower() or any(query in (self.curriculum.entries[eid].text(self.language, self.traditional) + " " + self.curriculum.entries[eid].meaning).lower() for eid in cat.entry_ids)]
+        if self.category_sort == "name":
+            return sorted(categories, key=lambda cat: self.category_title(cat).lower())
+        if self.category_sort == "size":
+            return sorted(categories, key=lambda cat: (len(cat.entry_ids), self.category_title(cat)))
+        if self.category_sort == "unfinished":
+            return sorted(categories, key=lambda cat: (self.progress.has_trophy(self.language, cat.id, self.curriculum), self.category_title(cat)))
+        order = {"situations": 0, "cantonese_characters": 1, "characters": 1, "hong_kong": 2, "vocabulary": 3}
+        return sorted(categories, key=lambda cat: (order.get(cat.kind, 9), cat.hsk or 0, cat.title))
+
+    def set_category_filter(self, key, value):
+        setattr(self, key, value)
+        self.category_page = 0
+
+    def reset_category_filters(self):
+        self.category_query, self.category_kind, self.category_theme = "", "all", "all"
+        self.category_sort, self.category_page = "recommended", 0
 
     def select_category(self, category_id, value):
         if value:
@@ -230,33 +272,44 @@ class App:
         if modes:
             controls.append(ft.Row([self.button(label, self.start, mode, list(self.selected), primary=mode=="core", disabled=not self.selected) for label,mode in
                 [("Flashcards", "flashcards"), ("Core quiz", "core"), ("Drill characters", "drill"), ("Matching game", "match")]], wrap=True))
+        if modes:
+            controls.append(self.button("Practise sentence meanings", self.start, "sentence", list(self.selected), disabled=not any(entry.kind == "sentence" for entry in entries)))
         return self.panel(controls, color=self.colors["soft"], padding=18)
 
     def category_grid(self):
         matches = self.filtered_categories()
-        per_page = 24
+        per_page = 16
         self.category_page = max(0, min(self.category_page, max(0, math.ceil(len(matches)/per_page)-1)))
-        controls = []
+        rows = []
         for cat in matches[self.category_page*per_page:(self.category_page+1)*per_page]:
             won = self.progress.has_trophy(self.language, cat.id, self.curriculum)
-            samples = " · ".join(self.curriculum.entries[x].text(self.language, self.traditional) for x in cat.entry_ids[:4])
-            controls.append(self.panel([
-                ft.Row([ft.Checkbox(value=cat.id in self.selected, on_change=self.event_action(self.select_category, lambda e, cid=cat.id: (cid, e.control.value))), self.tag("🏆 1/1 core" if won else "0/1 core")], alignment=ft.MainAxisAlignment.SPACE_BETWEEN),
-                self.text(cat.title, 18, bold=True), self.text(f"{len(cat.entry_ids)} cards · " + ("Core characters" if cat.kind=="characters" else "Hong Kong" if cat.kind=="hong_kong" else f"HSK {cat.hsk}"), 12, muted=True),
-                self.text(samples, 22, hanzi=True, max_lines=2), self.button("Open category", self.open_category, cat.id)], padding=18, col={"xs":12,"sm":6,"lg":4}))
-        return ft.Column([self.text(f"{len(matches)} categories", 13, muted=True), ft.ResponsiveRow(controls, spacing=12, run_spacing=12),
-            self.pagination(self.category_page, len(matches), per_page, self.move_category_page)], spacing=16)
+            sample = " · ".join(self.curriculum.entries[eid].text(self.language, self.traditional) for eid in cat.entry_ids[:2])
+            rows.append(ft.Container(ft.Row([
+                ft.Checkbox(value=cat.id in self.selected, on_change=self.event_action(self.select_category, lambda e, cid=cat.id: (cid, e.control.value))),
+                ft.Column([self.text(self.category_title(cat), 17, bold=True), self.text(f"{cat.theme} · {len(cat.entry_ids)} cards" + (" · 🏆" if won else ""), 12, muted=True), self.text(sample, 15, hanzi=True, max_lines=2)], expand=True, spacing=4),
+                self.button("Open", self.open_category, cat.id)], vertical_alignment=ft.CrossAxisAlignment.CENTER), padding=12, border=ft.Border.only(bottom=ft.BorderSide(1, self.colors["line"]))))
+        return ft.Column([self.text(f"{len(matches)} categories", 13, muted=True), self.pagination(self.category_page, len(matches), per_page, self.move_category_page), *rows, self.pagination(self.category_page, len(matches), per_page, self.move_category_page)], spacing=8)
 
     def move_category_page(self, amount):
         self.category_page += amount
 
     def categories(self):
-        query = ft.TextField(value=self.category_query, label="Find a category or character", expand=True, on_change=lambda e: setattr(self,"category_query",e.control.value), on_submit=self.action(self.search_categories), border=ft.OutlineInputBorder(border_radius=12))
-        return ft.Column([self.heading("Choose your next small win", "Select several categories to practise their combined vocabulary."),
-            ft.Row([query, self.button("Search", self.search_categories)], vertical_alignment=ft.CrossAxisAlignment.END),
-            ft.Row([self.dropdown("Show", self.category_kind, [("all","All sets"),("characters","First 1000"),("vocabulary","Vocabulary"),("hong_kong","Hong Kong"),*[(str(i),f"HSK {i}") for i in range(1,5)]], self.filter_categories),
-                self.button("Select all shown", self.select_visible, True), self.button("Clear selection", self.select_visible, False)], wrap=True),
-            self.selection_bar(), self.category_grid()], spacing=20)
+        query = ft.TextField(value=self.category_query, label="Search a situation, topic, word, or meaning", expand=True, on_change=lambda e: setattr(self,"category_query",e.control.value), on_submit=self.action(self.search_categories), border=ft.OutlineInputBorder(border_radius=12))
+        themes = sorted({cat.theme for cat in self.visible_categories()})
+        return ft.Column([self.heading("Find something useful to practise", "Start with a real situation, browse a topic, or mix selected sets."),
+            ft.Row([query, self.button("Search", self.search_categories)], wrap=True),
+            ft.Row([self.button(label, self.set_category_filter, "category_kind", kind, primary=self.category_kind==kind) for label, kind in [("All", "all"), ("Situations", "situations"), ("Characters", "characters"), ("Vocabulary", "vocabulary"), ("Spoken expressions", "hong_kong")]], wrap=True),
+            ft.Row([self.dropdown("Topic", self.category_theme, [("all","All topics"),*[(theme,theme) for theme in themes]], self.event_action(self.set_category_filter,lambda e:("category_theme",e.control.value))),
+                self.dropdown("Sort", self.category_sort, [("recommended","Recommended"),("name","Name A–Z"),("size","Small sets first"),("unfinished","Unfinished first")], self.event_action(self.set_category_filter,lambda e:("category_sort",e.control.value))),
+                self.button("Reset filters", self.reset_category_filters)], wrap=True),
+            ft.Row([self.button("Select filtered sets", self.select_visible, True), self.button("Clear selection", self.select_visible, False)], wrap=True),
+            self.selection_bar(), self.category_grid()], spacing=18)
+
+    def adjacent_category(self, amount):
+        matches = self.filtered_categories()
+        index = next((i for i,cat in enumerate(matches) if cat.id == self.category_id), None)
+        if index is not None and 0 <= index + amount < len(matches):
+            self.open_category(matches[index + amount].id)
 
     def open_category(self, category_id):
         self.navigate("category")
@@ -265,19 +318,60 @@ class App:
     def category_detail(self):
         cat = self.curriculum.category_map[self.category_id]
         won = self.progress.has_trophy(self.language,cat.id,self.curriculum)
-        return ft.Column([self.button("← All categories", self.navigate, "categories"), self.heading(cat.title, cat.description), self.tag("🏆 Core quiz completed · 1/1" if won else "Core quiz · 0/1 completed"),
+        matches = self.filtered_categories()
+        position = next((i for i, item in enumerate(matches) if item.id == cat.id), -1)
+        return ft.Column([ft.Row([self.button("← All categories", self.navigate, "categories"), self.button("← Previous set", self.adjacent_category, -1, disabled=position<=0), self.button("Next set →", self.adjacent_category, 1, disabled=position<0 or position+1>=len(matches))], wrap=True), self.heading(self.category_title(cat), cat.description.replace("Hong Kong Cantonese", "Cantonese")), self.tag("🏆 Core quiz completed · 1/1" if won else "Core quiz · 0/1 completed"),
             ft.Row([self.button(label,self.start,mode,[cat.id],primary=mode=="core") for label,mode in [("Train flashcards","flashcards"),("Write the characters · Core quiz","core"),("Character drill","drill"),("Matching game","match")]], wrap=True),
-            self.text("Category dictionary",22,bold=True), *[self.entry_card(self.curriculum.entries[x]) for x in cat.entry_ids]], spacing=18)
+            *([self.button("Practise sentence meanings", self.start, "sentence", [cat.id], primary=True)] if cat.kind == "situations" else []), self.text("Category dictionary",22,bold=True), *[self.entry_row(self.curriculum.entries[x]) for x in cat.entry_ids]], spacing=18)
 
     def entry_card(self, entry):
         ex = entry.example(self.language, self.traditional)
-        tags = [self.tag("Character card" if entry.kind=="character" else "Hong Kong phrase" if entry.kind=="hong_kong" else f"HSK {entry.hsk}")]
+        tags = [self.tag("Sentence" if entry.kind=="sentence" else "Character card" if entry.kind in ("character", "cantonese_character") else "Spoken expression" if entry.kind=="hong_kong" else f"HSK {entry.hsk}")]
         return self.panel([ft.Row([self.text(entry.text(self.language,self.traditional),30,hanzi=True),*tags], wrap=True, spacing=12),
             self.text(entry.reading(self.language),14,muted=True),self.text(entry.meaning,16),
             *([self.text(entry.data["usage_note"],12,muted=True)] if self.language=="cantonese" and entry.data.get("usage_note") else []),
             self.text(ex["text"],18,hanzi=True),self.text(ex["english"],13,muted=True),
             self.text(("Reference example" if ex["source"]=="Reference" else "Original example" if ex["source"]=="Original" else "Tatoeba example") + " · " + (entry.data.get("cantonese_register", "") if self.language=="cantonese" else "Mandarin"),11,muted=True),
             self.button("Example attribution",self.show_attribution,entry)], padding=18)
+
+    def entry_row(self, entry):
+        return ft.Container(ft.Row([
+            ft.Column([self.text(entry.text(self.language, self.traditional), 23, hanzi=True), self.text(entry.reading(self.language), 13, muted=True), self.text(entry.meaning, 14)], expand=True, spacing=4),
+            self.button("Details", self.show_entry, entry)], vertical_alignment=ft.CrossAxisAlignment.CENTER), padding=12, border=ft.Border.only(bottom=ft.BorderSide(1, self.colors["line"])))
+
+    def show_entry(self, entry):
+        self.dialog(entry.text(self.language, self.traditional), [self.entry_card(entry)])
+
+    def sentence_setup(self):
+        situations = [cat for cat in self.curriculum.categories if cat.kind == "situations"]
+        return ft.Column([self.heading("Understand whole sentences", "Read a Mandarin or spoken Cantonese sentence, choose its meaning, then review its pronunciation."),
+            self.button("Mix all situations", self.start, "sentence", [cat.id for cat in situations], primary=True),
+            *[self.panel([self.text(cat.title, 20, bold=True), self.text(cat.theme + " · 4 sentences", 13, muted=True), self.button("Practise this situation", self.start, "sentence", [cat.id])], padding=16) for cat in situations]], spacing=12)
+
+    async def answer_sentence(self, value):
+        answer = self.session.answer(value)
+        self.progress.record_answer(self.language, answer.correct)
+        self.feedback_correct = answer.correct
+        self.feedback = ("Correct. " if answer.correct else "Meaning: ") + self.session.current.meaning
+        await self.save()
+
+    async def next_sentence(self):
+        session = self.session
+        session.advance()
+        self.feedback, self.feedback_correct = "", None
+        if session.finished:
+            self.progress.finish(self.language, "sentence", len(session.items), session.correct_count, len(session.answers), self.session_ids)
+            self.complete("sentence", len(session.items), session.correct_count, len(session.answers), False, [], session.answers)
+            await self.save()
+
+    def sentence(self):
+        session = self.session
+        entry = session.current
+        return ft.Column([self.session_top("Sentence meaning", session.index+1, len(session.items)),
+            self.panel([self.text(entry.text(self.language,self.traditional),32,hanzi=True), self.text("What does this sentence mean?",15,muted=True),
+                *[self.button(meaning,self.answer_sentence,meaning,disabled=session.pending is not None) for meaning in session.options()],
+                self.feedback_card(), *([self.text(entry.reading(self.language),17), self.text("Original learning sentence · other natural phrasings are possible.",12,muted=True)] if session.pending else []),
+                self.button("Finish" if session.index+1==len(session.items) else "Next sentence →",self.next_sentence,primary=True,disabled=session.pending is None)],padding=24)],spacing=20)
 
     def search_dictionary(self):
         self.dictionary_page=0
@@ -296,16 +390,17 @@ class App:
 
     def dictionary(self):
         entries=self.curriculum.dictionary(self.dictionary_query,self.language,self.traditional,self.dictionary_sort,self.dictionary_category,self.dictionary_hsk)
+        entries=[entry for entry in entries if entry.kind != ("character" if self.language == "cantonese" else "cantonese_character")]
         self.dictionary_page=max(0,min(self.dictionary_page,max(0,math.ceil(len(entries)/30)-1)))
         search=ft.TextField(value=self.dictionary_query,label="Search characters, reading, meaning, or category",expand=True,on_change=lambda e:setattr(self,"dictionary_query",e.control.value),on_submit=self.action(self.search_dictionary),border=ft.OutlineInputBorder(border_radius=12))
-        return ft.Column([self.heading("Your whole dictionary", "All vocabulary and character cards, with separate language forms and examples."),
+        return ft.Column([self.heading("Your whole dictionary", "Words, sentences, and character cards. Open Details for examples and source notes."),
             ft.Row([search,self.button("Search",self.search_dictionary)], vertical_alignment=ft.CrossAxisAlignment.END),
             ft.Row([self.dropdown("Sort by",self.dictionary_sort,[("frequency","Frequency"),("hsk","HSK level"),("alphabetical","Reading A–Z"),("meaning","English A–Z"),("category","Category")],lambda e:self.set_dictionary_filter("dictionary_sort",e.control.value)),
-                self.dropdown("Level",self.dictionary_hsk,[("all","All levels"),*[(str(i),f"HSK {i}") for i in range(1,5)],("hong_kong","Hong Kong")],lambda e:self.set_dictionary_filter("dictionary_hsk",e.control.value)),
-                self.dropdown("Category",self.dictionary_category,[("all","All categories"),*[(x.id,x.title) for x in self.curriculum.categories]],lambda e:self.set_dictionary_filter("dictionary_category",e.control.value),width=300)],wrap=True),
-            self.text(f"{len(entries):,} entries · frequency uses source ranks; unranked phrases appear last",13,muted=True),
+                self.dropdown("Level",self.dictionary_hsk,[("all","All levels"),*[(str(i),f"HSK {i}") for i in range(1,5)],("hong_kong","Spoken expressions")],lambda e:self.set_dictionary_filter("dictionary_hsk",e.control.value)),
+                self.dropdown("Category",self.dictionary_category,[("all","All categories"),*[(x.id,x.title) for x in self.visible_categories()]],lambda e:self.set_dictionary_filter("dictionary_category",e.control.value),width=300)],wrap=True),
+            self.text(f"{len(entries):,} entries · " + ("Cantonese character cards use their provisional learning order; vocabulary ranks come from the original sources." if self.language == "cantonese" else "Frequency uses source ranks; unranked sentences appear last."),13,muted=True),
             self.pagination(self.dictionary_page,len(entries),30,self.move_dictionary_page),
-            *[self.entry_card(x) for x in entries[self.dictionary_page*30:(self.dictionary_page+1)*30]],
+            *[self.entry_row(x) for x in entries[self.dictionary_page*30:(self.dictionary_page+1)*30]],
             self.pagination(self.dictionary_page,len(entries),30,self.move_dictionary_page)],spacing=18)
 
     def set_drill_mode(self, mode):
@@ -324,7 +419,9 @@ class App:
         entries=self.curriculum.selected_entries(ids)
         self.feedback,self.feedback_correct,self.input_value="",None,""
         self.result=None
-        if mode=="core":
+        if mode=="sentence":
+            self.session=SentenceSession(entries)
+        elif mode=="core":
             self.session=CoreSession(entries,self.language,self.traditional)
         elif mode=="drill":
             chars=self.curriculum.selected_characters(ids,self.language,self.traditional)
@@ -383,11 +480,21 @@ class App:
     async def answer_drill(self, value=None):
         session=self.session
         char=session.current
-        answer=session.answer(value if value is not None else self.input_value)
+        answer=session.answer((value if value is not None else self.input_value) or "—")
         self.progress.record_answer(self.language,answer.correct,char)
+        if self.language == "cantonese":
+            targets = [glyph for glyph in self.curriculum.cantonese_targets if glyph == char.glyph or self.curriculum.entries["cant-char:" + glyph].text("cantonese", False) == char.glyph]
+            record = self.progress.state(self.language)["characters"][char.glyph]
+            record["target_ids"] = list(dict.fromkeys(record["target_ids"] + targets))
         self.feedback_correct=answer.correct
-        self.feedback=("Correct! " if answer.correct else "The accepted reading(s): ")+" / ".join(answer.accepted)
+        self.feedback=("Correct! " if answer.correct else "The accepted reading(s): ")+" / ".join(answer.accepted)+" · "+char.meaning
         await self.save()
+
+    async def submit_drill(self):
+        if self.session.pending is None:
+            await self.answer_drill()
+        else:
+            await self.next_drill()
 
     async def next_drill(self):
         session=self.session
@@ -412,9 +519,9 @@ class App:
             answer_controls=[ft.ResponsiveRow(options,spacing=12,run_spacing=12)]
         else:
             label="Jyutping + tone number" if self.language=="cantonese" else "Pinyin + tone number (peng2)"
-            answer_controls=[self.answer_field(label,self.answer_drill,disabled=session.pending is not None),self.button("Check reading",self.answer_drill,primary=True,disabled=session.pending is not None)]
+            answer_controls=[self.answer_field(label if session.pending is None else "Press Enter for the next character",self.submit_drill),self.button("Check reading",self.answer_drill,primary=True,disabled=session.pending is not None)]
         return ft.Column([self.session_top("Character driller",session.index+1,len(session.items)),
-            self.panel([self.text(char.glyph,100,hanzi=True,text_align=ft.TextAlign.CENTER),self.text("Recall the pronunciation",15,muted=True),*answer_controls,self.feedback_card(),
+            self.panel([self.text(char.glyph,100,hanzi=True,text_align=ft.TextAlign.CENTER),self.text("Enter checks your answer (or reveals it when blank). Enter again continues.",15,muted=True),*answer_controls,self.feedback_card(),
                 self.button("Finish drill" if session.index+1==len(session.items) else "Next character →",self.next_drill,primary=True,disabled=session.pending is None),
                 self.text(f"{session.correct_count}/{len(session.answers)} correct so far",13,muted=True)],padding=28)],spacing=20)
 
@@ -506,7 +613,7 @@ class App:
         controls=[self.heading("Your progress", self.language_label + " · saved in this browser; copy a backup to move devices"),
             self.panel([self.text(f'{summary["characters"]} of 1,000 target characters practised',25,bold=True),ft.ProgressBar(value=summary["characters"]/1000,color=self.colors["accent"]),
                 self.text(f'{summary["trophies"]} core trophies · {summary["attempts"]} graded attempts · '+("no graded answers yet" if summary["accuracy"] is None else f'{summary["accuracy"]:.1%} accuracy'),15),
-                self.text(f'{state["flashcards"]} flashcards reviewed. “Practised” counts characters attempted in drills, including their traditional forms.',13,muted=True)]),
+                self.text(f'{state["flashcards"]} flashcards reviewed. “Practised” follows this language’s character track. Earlier records and trophies remain saved.',13,muted=True)]),
             ft.Row([self.button("Copy / view progress backup",self.show_export,primary=True),self.button("Restore backup",self.show_import)],wrap=True),
             self.text("Core quiz trophies",22,bold=True),ft.Row([self.tag("🏆 "+cat.title) for cat in trophies],wrap=True) if trophies else self.text("Your first trophy is waiting. Complete one core quiz with no mistakes.",15,muted=True),
             self.text("Recent completed sessions",22,bold=True)]
@@ -565,18 +672,18 @@ class App:
     def show_attribution(self,entry):
         ex=entry.example(self.language,self.traditional)
         self.dialog("Example source",[self.text(ex["text"],22,hanzi=True),self.text(ex["english"],16),self.text(ex["attribution"],13),self.text("License: "+ex["license"],13,muted=True),
-            self.text("Character conversion adapts the source spelling to the selected simplified or Hong Kong traditional script.",13,muted=True)])
+            self.text("Character conversion adapts the source spelling to the selected simplified or traditional script.",13,muted=True)])
 
     def show_sources(self):
         coverage=self.curriculum.meta["example_coverage"]
         self.dialog("Curriculum sources & notes",[
-            self.text("1,000 frequency-ranked characters · 1,193 unique HSK words · 38 Hong Kong phrases · 133 categories",17,bold=True),
+            self.text("Separate 1,000-character tracks · 12 situations · 48 original sentences · vocabulary and expressions",17,bold=True),
             self.text("This edition reconstructs the saved requirements. The interrupted conversation’s source files were unavailable.",13,muted=True),
             self.text("HSK 2012 levels 1–4: clem109/hsk-vocabulary and drkameleon/complete-hsk-vocabulary, with CC-CEDICT definitions (CC BY-SA 3.0). Themes are editorial groupings.",13),
             self.text("HanziDB / Jun Da provides the character frequency ranking. Unihan (Unicode 18) and Pleco’s CC-Canto provide character readings. Pleco content: © 2015–2017 Pleco Inc., CC BY-SA 3.0.",13),
             self.text("Mandarin and Cantonese Tatoeba examples retain the authors and sentence IDs in each entry. License: CC BY 2.0 FR. Uncovered items use clearly marked original reference examples.",13),
             self.text(f'Example sources — Mandarin: {coverage["mandarin"]}; Cantonese: {coverage["cantonese"]}.',12,muted=True),
-            self.text(self.curriculum.meta["cantonese_note"],13),
+            self.text("Cantonese characters use a separate provisional order: spoken essentials first, then occurrence counts in the bundled Cantonese examples. This is not a representative general-language frequency ranking.",13),
             self.text("Full notices, source URLs, and build provenance are included with the downloadable project. Font: Noto Sans CJK HK and Inter, SIL OFL 1.1.",13)])
 
 

@@ -36,6 +36,12 @@ with tarfile.open(dist/"app.tar.gz") as tar:
     assert len(payload["target_characters"])==1000
     assert len(payload["vocabulary_entry_ids"])==1231
     assert len(payload["categories"])==133
+    extra_rel="first1000/data/everyday.json"
+    extra_bytes=tar.extractfile(names[extra_rel]).read()
+    assert extra_bytes==(root/"src"/extra_rel).read_bytes(), "Stale everyday content"
+    extra=json.loads(extra_bytes)
+    assert len(extra["cantonese_targets"])==1000
+    assert len([entry for entry in extra["entries"] if entry["kind"]=="sentence"])==48
     assert tar.extractfile(names["requirements.txt"]).read().strip()==b"flet==1.0.3", "Unexpected runtime dependency"
 if 'flet.noCdn=true' in html:
     runtime=dist/"pyodide"
@@ -45,4 +51,4 @@ if 'flet.noCdn=true' in html:
         assert (runtime/name).stat().st_size>1000, f"Incomplete Pyodide runtime: {name}"
     assert list(runtime.glob("micropip-*.whl")) and list(runtime.glob("packaging-*.whl"))
     assert list((dist/"canvaskit").glob("*.wasm")), "Missing CanvasKit"
-print(f"Distribution verified: {payload['meta']['vocabulary_count']} words, 1000 characters, 133 sets; source hashes match.")
+print(f"Distribution verified: {payload['meta']['vocabulary_count']} words, 1000 characters, 133 original sets plus 52 new sets, 48 sentences and a separate Cantonese track; source hashes match.")

@@ -1,3 +1,5 @@
+> Historical verification notes for the original edition. See UPDATE_0.2.0.md for the current features and migration notes. Version 0.2.0 passes 94 tests; rendered browser UI has not been tested here.
+
 # Flet web compatibility audit
 
 This audit applies to the existing First1000 source, pinned to **Flet 1.0.3** with **Python 3.12 / Pyodide 0.27.8** for static builds. The other application's Flet 0.86.3 target was not adopted. Curriculum content, category IDs and membership, scores, trophy fingerprints, the original storage key, and progress schema remain unchanged.

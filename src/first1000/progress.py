@@ -62,7 +62,7 @@ class Progress:
     def summary(self, language: str, curriculum: Curriculum) -> dict:
         state = self.state(language)
         practised = set(target for record in state["characters"].values() if record["attempts"] for target in record["target_ids"])
-        practised &= set(curriculum.target_characters)
+        practised &= set(curriculum.targets(language))
         return {"attempts": state["attempts"], "accuracy": state["correct"] / state["attempts"] if state["attempts"] else None, "trophies": sum(self.has_trophy(language, cat.id, curriculum) for cat in curriculum.categories), "characters": len(practised), "sessions": len(state["sessions"])}
 
     def export(self) -> str:
@@ -109,7 +109,7 @@ class Progress:
                 if type(a) is not int or type(c) is not int or not 0 <= c <= a <= 100_000_000 or not isinstance(targets, list) or any(not isinstance(x, str) or len(x) != 1 for x in targets):
                     raise ValueError("Invalid character scores")
             for session in sessions:
-                if not isinstance(session, dict) or session.get("mode") not in ("core", "drill", "match", "flashcards"):
+                if not isinstance(session, dict) or session.get("mode") not in ("core", "drill", "match", "flashcards", "sentence"):
                     raise ValueError("Invalid session record")
                 for key in ("total", "correct", "attempts"):
                     if type(session.get(key)) is not int or not 0 <= session[key] <= 100_000_000:

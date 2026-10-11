@@ -1,3 +1,5 @@
+> Historical verification notes for the original edition. See UPDATE_0.2.0.md for the current features and migration notes. Version 0.2.0 passes 94 tests; rendered browser UI has not been tested here.
+
 # Recovery and completed work
 
 The original requirements and visible progress messages were supplied in the current conversation. They established Python/Flet, Mandarin/Cantonese and HK traditional modes, the first-1,000-character goal, 40 core character sets, 93 themed sets, 1,231 words/phrases, fixed core quizzes with perfect-run trophies, mixed categories, a dictionary, flashcards, character drills, and progress tracking. They also mentioned a matching game and progress backup work.
