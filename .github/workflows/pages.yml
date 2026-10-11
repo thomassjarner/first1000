@@ -38,9 +38,9 @@ jobs:
             echo "path=/$repo_name/" >> "$GITHUB_OUTPUT"
           fi
       - name: Build static Flet website
-        run: flet publish . --python-version 3.12 --distpath dist --no-cdn --route-url-strategy hash --base-url '${{ steps.base.outputs.path }}'
+        run: python tools/build_web.py --base-url '${{ steps.base.outputs.path }}'
       - name: Check packaged app
-        run: python tools/check_distribution.py dist
+        run: python tools/fix_web_paths.py dist && python tools/check_distribution.py dist
       - uses: actions/upload-pages-artifact@v3
         with:
           path: dist

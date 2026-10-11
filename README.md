@@ -49,7 +49,11 @@ Flashcard ratings are self-assessments and do not affect graded accuracy. Core/m
 
 Progress is saved in the browser or Flet client on the current device using SharedPreferences. There is no account or cloud synchronization. A different browser, private window, device, or website origin has separate progress.
 
-Open **Progress → Copy / view progress backup**, copy the JSON, and save it in a text file. To move devices, paste that file into **Restore backup**. Restoration validates the complete backup before replacing saved progress. It contains both languages and settings. If storage is unavailable, the app displays a message and retains the current progress in memory.
+Open **Progress → Copy / view progress backup**, copy the JSON, and save it in a text file. To move devices, paste that file into **Restore backup**. The backup contains both languages and settings. If clipboard access is denied, the JSON stays visible for manual selection and copying.
+
+The existing `first1000.progress.v1` key and schema are preserved. Saves verify a main copy, a shadow copy, and the previous valid rollback copy. Loading never writes defaults over existing data. Unreadable data, inconsistent copies, a failed save, or an observed change from another tab pauses automatic saving and displays a warning. Progress stays usable in memory; export it before closing.
+
+If a recovery warning appears, copy the normal progress backup and **Copy preserved browser data** in Progress. The latter preserves raw stored copies for recovery and is not a normal importable progress backup. Restore the valid normal backup you want to keep to resume saving. Before replacing stored copies, restoration validates the complete backup and archives the existing raw copies under a separate recovery key. A failed restore leaves the current in-memory progress unchanged. Recovery copies protect against interrupted writes; they do not survive clearing browser site data, and simultaneous tabs cannot be coordinated atomically through SharedPreferences.
 
 ## Publish to GitHub Pages
 
@@ -71,6 +75,8 @@ Use the build script for static publishing. It resolves Flet 1.0.3's local Pyodi
 
 The static app runs Python through Pyodide. The first load downloads a Python/WebAssembly runtime and the Flet package, so allow it time to start. `--no-cdn` includes the runtime and CanvasKit in the website; Python package installation still needs network access on first load. This is not an offline guarantee.
 
+If an older GitHub workflow fails with "Pyodide module URL must resolve against document.baseURI", run `python tools/repair_pages_workflow.py` in your working checkout, then commit and push. It adds the URL repair immediately before the packaged-app check in existing `.github/workflows` files, preserving their filenames and other steps. This also works when an older workflow still calls `flet publish` directly. The `.github` folder is hidden in macOS Finder; keep it included when copying updates.
+
 ## Development
 
 ```sh
@@ -83,15 +89,16 @@ Architecture:
 | File | Responsibility |
 |---|---|
 | `src/main.py` | Flet entry point |
-| `src/first1000/ui.py` | Screens, controls, async storage, and event handlers |
+| `src/first1000/ui.py` | Screens, controls, and async event handlers |
 | `src/first1000/curriculum.py` | Immutable curriculum models, filtering, and category membership |
 | `src/first1000/practice.py` | Core quiz, pronunciation drill, and matching rules |
 | `src/first1000/progress.py` | Per-language scores, content-fingerprinted trophies, and backup validation |
+| `src/first1000/storage.py` | Async browser saves, verified recovery copies, and preservation of unreadable data |
 | `src/first1000/data/curriculum.json` | Precomputed learning content; no language packages needed at runtime |
 | `tools/build_curriculum.py` | Reproducible content preparation and font subsetting |
 | `tests/` | Scoring, curriculum, persistence, and actual Flet control/handler checks |
 
-See [THIRD_PARTY.md](THIRD_PARTY.md) for attribution and [RECOVERY_AND_STATUS.md](RECOVERY_AND_STATUS.md) for what could be recovered and the verification limits.
+See [THIRD_PARTY.md](THIRD_PARTY.md) for attribution, [RECOVERY_AND_STATUS.md](RECOVERY_AND_STATUS.md) for recovery history, and [BROWSER_AUDIT.md](BROWSER_AUDIT.md) for the 20-item Flet web audit and verification limits.
 
 ## Content notes
 

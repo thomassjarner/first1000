@@ -10,7 +10,8 @@ import flet as ft
 
 from .curriculum import Curriculum, Entry
 from .practice import CoreSession, DrillSession, MatchSession, normalize_reading
-from .progress import Progress, STORAGE_KEY
+from .progress import Progress
+from .storage import ProgressStore
 
 LIGHT = dict(bg="#F6F5F0", surface="#FFFFFF", ink="#202F2C", muted="#64746E", line="#DDE5DE", accent="#15756C", soft="#E6F2EA", red="#A52E37", redbg="#FCE8E9", green="#17683D", greenbg="#DDF4E5")
 DARK = dict(bg="#121D1B", surface="#1D2B27", ink="#E9F2EC", muted="#A9BAB1", line="#354740", accent="#7FD7BE", soft="#263E35", red="#FFAFB5", redbg="#4D272E", green="#9AE2B2", greenbg="#244633")
@@ -21,6 +22,7 @@ class App:
     def __init__(self, page: ft.Page, curriculum: Curriculum, preferences=None):
         self.page, self.curriculum = page, curriculum
         self.preferences = preferences or ft.SharedPreferences()
+        self.progress_store = ProgressStore(self.preferences)
         self.clipboard = ft.Clipboard()
         self.progress = Progress()
         self.screen = "home"
@@ -76,22 +78,14 @@ class App:
         return "Cantonese · Jyutping" if self.language == "cantonese" else "Mandarin · Pinyin"
 
     async def initialize(self):
-        try:
-            saved = await self.preferences.get(STORAGE_KEY)
-            if saved:
-                self.progress = Progress.from_json(saved)
-        except Exception:
-            self.storage_error = "Your saved progress could not be loaded. You can restore a backup in Progress."
+        self.progress = await self.progress_store.load()
+        self.storage_error = self.progress_store.message
         self.render()
 
     async def save(self):
-        try:
-            saved = await self.preferences.set(STORAGE_KEY, self.progress.export())
-            if saved is False:
-                raise RuntimeError("Storage unavailable")
-            self.storage_error = ""
-        except Exception:
-            self.storage_error = "Progress is in memory, but this browser could not save it. Copy a backup from Progress before closing."
+        saved = await self.progress_store.save(self.progress)
+        self.storage_error = self.progress_store.message
+        return saved
 
     def action(self, callback, *args):
         async def handler(event=None):
@@ -140,7 +134,7 @@ class App:
 
     def dropdown(self, label, value, options, change, width=210):
         return ft.Dropdown(label=label, value=value, width=width, options=[ft.DropdownOption(key=k, text=v) for k, v in options], on_select=change,
-            border_radius=12, border_color=self.colors["line"], color=self.colors["ink"], bgcolor=self.colors["surface"], text_size=14, menu_height=350)
+            border=ft.OutlineInputBorder(border_radius=12, side=ft.BorderSide(color=self.colors["line"])), color=self.colors["ink"], bgcolor=self.colors["surface"], text_size=14, menu_height=350)
 
     def navigate(self, screen):
         self.screen, self.session, self.result = screen, None, None
@@ -255,7 +249,7 @@ class App:
         self.category_page += amount
 
     def categories(self):
-        query = ft.TextField(value=self.category_query, label="Find a category or character", expand=True, on_change=lambda e: setattr(self,"category_query",e.control.value), on_submit=self.action(self.search_categories), border_radius=12)
+        query = ft.TextField(value=self.category_query, label="Find a category or character", expand=True, on_change=lambda e: setattr(self,"category_query",e.control.value), on_submit=self.action(self.search_categories), border=ft.OutlineInputBorder(border_radius=12))
         return ft.Column([self.heading("Choose your next small win", "Select several categories to practise their combined vocabulary."),
             ft.Row([query, self.button("Search", self.search_categories)], vertical_alignment=ft.CrossAxisAlignment.END),
             ft.Row([self.dropdown("Show", self.category_kind, [("all","All sets"),("characters","First 1000"),("vocabulary","Vocabulary"),("hong_kong","Hong Kong"),*[(str(i),f"HSK {i}") for i in range(1,5)]], self.filter_categories),
@@ -301,7 +295,7 @@ class App:
     def dictionary(self):
         entries=self.curriculum.dictionary(self.dictionary_query,self.language,self.traditional,self.dictionary_sort,self.dictionary_category,self.dictionary_hsk)
         self.dictionary_page=max(0,min(self.dictionary_page,max(0,math.ceil(len(entries)/30)-1)))
-        search=ft.TextField(value=self.dictionary_query,label="Search characters, reading, meaning, or category",expand=True,on_change=lambda e:setattr(self,"dictionary_query",e.control.value),on_submit=self.action(self.search_dictionary),border_radius=12)
+        search=ft.TextField(value=self.dictionary_query,label="Search characters, reading, meaning, or category",expand=True,on_change=lambda e:setattr(self,"dictionary_query",e.control.value),on_submit=self.action(self.search_dictionary),border=ft.OutlineInputBorder(border_radius=12))
         return ft.Column([self.heading("Your whole dictionary", "All vocabulary and character cards, with separate language forms and examples."),
             ft.Row([search,self.button("Search",self.search_dictionary)], vertical_alignment=ft.CrossAxisAlignment.END),
             ft.Row([self.dropdown("Sort by",self.dictionary_sort,[("frequency","Frequency"),("hsk","HSK level"),("alphabetical","Reading A–Z"),("meaning","English A–Z"),("category","Category")],lambda e:self.set_dictionary_filter("dictionary_sort",e.control.value)),
@@ -373,7 +367,7 @@ class App:
     def answer_field(self, label, handler, hanzi=False, disabled=False):
         return ft.TextField(value=self.input_value,label=label,autofocus=True,disabled=disabled,autocorrect=False,enable_suggestions=hanzi,
             text_style=ft.TextStyle(font_family="Hanzi" if hanzi else "Inter",size=24 if hanzi else 18,color=self.colors["ink"]),
-            on_change=lambda e:setattr(self,"input_value",e.control.value),on_submit=self.action(handler),border_radius=14,border_color=self.colors["line"])
+            on_change=lambda e:setattr(self,"input_value",e.control.value),on_submit=self.action(handler),border=ft.OutlineInputBorder(border_radius=14, side=ft.BorderSide(color=self.colors["line"])))
 
     def core(self):
         session=self.session
@@ -517,6 +511,8 @@ class App:
         for row in reversed(state["sessions"][-12:]):
             score=row["correct"]/row["attempts"] if row["attempts"] else 0
             controls.append(self.panel([self.text(MODE_NAMES[row["mode"]],17,bold=True),self.text(f'{row["correct"]}/{row["total"]} · {score:.0%} · {row["finished_at"][:16].replace("T"," ")} UTC',13,muted=True)],padding=16))
+        if self.progress_store.blocked or self.progress_store.recovery_snapshot:
+            controls.append(self.button("Copy preserved browser data",self.show_storage_backup))
         return ft.Column(controls,spacing=20)
 
     def close_dialog(self):
@@ -527,13 +523,21 @@ class App:
             bgcolor=self.colors["surface"],actions=actions or [self.button("Close",self.close_dialog)],scrollable=False))
 
     def show_export(self):
-        backup=self.progress.export()
+        self.show_json_backup("Progress backup",self.progress.export(),"The backup includes both languages, trophies, scores, and settings.")
+
+    def show_storage_backup(self):
+        self.show_json_backup("Preserved browser data",self.progress_store.recovery_export(),"Keep this file for data recovery. To use Restore backup, copy a normal progress backup separately.")
+
+    def show_json_backup(self,title,backup,explanation):
+        notice=self.text(explanation,13,muted=True)
         async def copy_backup():
-            await self.clipboard.set(backup)
-            self.backup_notice.value="Copied. Save this JSON in a file for safekeeping."
+            try:
+                await self.clipboard.set(backup)
+                notice.value="Copied. Save this JSON in a file for safekeeping."
+            except Exception:
+                notice.value="The browser could not copy automatically. Select the JSON below and copy it manually."
             self.page.update()
-        self.backup_notice=self.text("The backup includes both languages, trophies, scores, and settings.",13,muted=True)
-        self.dialog("Progress backup",[self.backup_notice,ft.TextField(value=backup,multiline=True,min_lines=8,max_lines=12,read_only=True,text_size=11)],
+        self.dialog(title,[notice,ft.TextField(value=backup,multiline=True,min_lines=8,max_lines=12,read_only=True,text_size=11)],
             [self.button("Copy JSON",copy_backup,primary=True),self.button("Close",self.close_dialog)])
 
     def show_import(self):
@@ -546,8 +550,13 @@ class App:
                 notice.value=str(error)
                 self.page.update()
                 return
+            if not await self.progress_store.restore(restored):
+                self.storage_error=self.progress_store.message
+                notice.value="The backup is valid, but this browser could not save it. Your current progress is unchanged. Keep the backup and try again."
+                self.page.update()
+                return
             self.progress=restored
-            await self.save()
+            self.storage_error=self.progress_store.message
             self.close_dialog()
         self.dialog("Restore progress",[notice,field],[self.button("Restore this backup",restore,primary=True),self.button("Cancel",self.close_dialog)])
 

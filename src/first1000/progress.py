@@ -70,6 +70,8 @@ class Progress:
 
     @classmethod
     def from_json(cls, text: str) -> "Progress":
+        if not isinstance(text, str):
+            raise ValueError("Paste a valid First 1000 JSON backup")
         if len(text.encode("utf-8")) > MAX_BACKUP_BYTES:
             raise ValueError("This backup is too large")
         try:
