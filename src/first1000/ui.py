@@ -20,6 +20,7 @@ MODE_NAMES = {"core": "Core quiz", "drill": "Character drill", "match": "Matchin
 
 class App:
     def __init__(self, page: ft.Page, curriculum: Curriculum, preferences=None):
+        self.ready = False
         self.page, self.curriculum = page, curriculum
         self.preferences = preferences or ft.SharedPreferences()
         self.progress_store = ProgressStore(self.preferences)
@@ -80,6 +81,7 @@ class App:
     async def initialize(self):
         self.progress = await self.progress_store.load()
         self.storage_error = self.progress_store.message
+        self.ready = True
         self.render()
 
     async def save(self):
@@ -109,7 +111,7 @@ class App:
         return handler
 
     def on_resize(self, event=None):
-        if self.breakpoint != self.narrow:
+        if self.ready and self.breakpoint != self.narrow:
             self.breakpoint = self.narrow
             self.render()
 
