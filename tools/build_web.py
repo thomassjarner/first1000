@@ -19,4 +19,5 @@ flet=Path(sys.executable).parent/("flet.exe" if sys.platform=="win32" else "flet
 command=[str(flet),*command[3:]]
 subprocess.run(command,cwd=root,check=True)
 subprocess.run([sys.executable,str(root/"tools/fix_web_paths.py"),str(root/"dist")],cwd=root,check=True)
+subprocess.run([sys.executable,str(root/"tools/bundle_pyodide_packages.py"),str(root/"dist")],cwd=root,check=True)
 subprocess.run([sys.executable,str(root/"tools/check_distribution.py"),str(root/"dist")],cwd=root,check=True)

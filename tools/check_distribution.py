@@ -7,6 +7,7 @@ import tarfile
 from pathlib import Path
 
 from fix_web_paths import has_resolved_pyodide_url
+from bundle_pyodide_packages import verify_packages
 
 root=Path(__file__).resolve().parents[1]
 dist=Path(sys.argv[1] if len(sys.argv)>1 else root/"dist").resolve()
@@ -38,6 +39,7 @@ with tarfile.open(dist/"app.tar.gz") as tar:
     assert tar.extractfile(names["requirements.txt"]).read().strip()==b"flet==1.0.3", "Unexpected runtime dependency"
 if 'flet.noCdn=true' in html:
     runtime=dist/"pyodide"
+    verify_packages(runtime)
     assert json.loads((runtime/"pyodide-lock.json").read_text())["info"]["version"]=="0.27.8"
     for name in ("pyodide.mjs","pyodide.asm.wasm","python_stdlib.zip"):
         assert (runtime/name).stat().st_size>1000, f"Incomplete Pyodide runtime: {name}"
