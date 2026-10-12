@@ -21,7 +21,7 @@ The compiled vocabulary portions of `curriculum.json` are distributed under CC B
 
 Input SHA-256 checksums and source repository commits appear in `src/first1000/data/provenance.json`. The curated asset inputs are included in `tools/curated/`. The builder documents the required input filenames; it does not fetch data during app startup.
 
-## Version 0.2.0 additions
+## Supplementary content and fonts
 
 The 48 paired situation sentences are original authored learning examples under CC BY-SA 3.0. Cantonese character selection reuses the existing attributed character readings and definitions. Its provisional order uses manually prioritized spoken essentials and occurrence counts in the bundled Cantonese examples and vocabulary; it is not an independent representative frequency corpus.
 

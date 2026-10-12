@@ -42,6 +42,7 @@ class App:
         self.drill_filter = "all"
         self.drill_page = 0
         self.review_page = 0
+        self.learned_page = 0
         self.session = None
         self.session_ids: list[str] = []
         self.input_value = ""
@@ -217,7 +218,7 @@ class App:
         if self.storage_error:
             controls.append(self.panel([self.text(self.storage_error, 13)], color=self.colors["redbg"], padding=14))
         controls += [builders[self.screen](), ft.Container(height=12),
-            self.text("First 1000 · v0.4.0 · Mandarin and Cantonese scores stay separate. HSK labels use the 2012 syllabus.", 11, muted=True),
+            self.text("First 1000 · v0.4.1 · Mandarin and Cantonese scores stay separate. HSK labels use the 2012 syllabus.", 11, muted=True),
             self.button("Content sources & notes", self.show_sources)]
         self.root.controls = [ft.Container(self.column(controls, spacing=24, horizontal_alignment=ft.CrossAxisAlignment.STRETCH), width=self.content_width, padding=ft.Padding.symmetric(vertical=24, horizontal=10))]
         self.page.update()
@@ -517,6 +518,14 @@ class App:
     def move_drill_page(self,amount):
         self.drill_page+=amount
 
+    async def set_character_learned(self,glyph,value,language=None):
+        self.progress.set_learned(language or self.language,self.curriculum.character_key(glyph),value)
+        await self.save()
+
+    def drill_learned_control(self,char):
+        language=self.language
+        return ft.Checkbox(label="Learned",value=self.progress.is_learned(language,self.curriculum.character_key(char.glyph)),on_change=self.event_action(self.set_character_learned,lambda event:(char.glyph,event.control.value,language)))
+
     def drill_setup(self):
         all_chars=self.drill_candidates(filtered=False)
         counts=Counter(self.progress.drill_status(self.language,self.curriculum.drill_key(char.glyph)) for char in all_chars)
@@ -527,7 +536,7 @@ class App:
             status=self.progress.drill_status(self.language,self.curriculum.drill_key(char.glyph))
             glyph=self.text(char.glyph,36,hanzi=True)
             glyph.color=self.colors[{"correct":"green","almost":"amber","incorrect":"red","unseen":"ink"}[status]]
-            cards.append(self.panel([glyph,self.example_text(char.glyph),self.status_tag(status)],padding=14,col={"xs":12,"sm":6,"md":4}))
+            cards.append(self.panel([glyph,self.text(("Pinyin" if self.language=="mandarin" else "Jyutping")+": "+" / ".join(char.readings(self.language)),15),self.example_text(char.glyph),self.status_tag(status),self.drill_learned_control(char)],padding=14,col={"xs":12,"sm":6,"md":4}))
         return self.column([self.heading("Character driller","Review the latest result for each character. Almost means the pronunciation matched but the tone did not."),
             self.button("Whole 1,000-character track",self.select_full_track,primary=True),
             ft.Row([self.button("Type the reading",self.set_drill_mode,"typed",primary=self.drill_mode=="typed"),self.button("8-choice mode",self.set_drill_mode,"choice",primary=self.drill_mode=="choice")],wrap=True),
@@ -773,6 +782,27 @@ class App:
         controls.append(self.character_review())
         return self.panel(controls,padding=28)
 
+    def learned_character_entries(self):
+        # Prefer the current language's target cards, then include any other
+        # single-character cards explicitly marked learned in this language.
+        prefix="cant-char:" if self.language=="cantonese" else "c:"
+        preferred=[self.curriculum.entries[prefix+glyph] for glyph in self.curriculum.targets(self.language) if prefix+glyph in self.curriculum.entries]
+        result={}
+        for entry in preferred+list(self.curriculum.entries.values()):
+            if len(entry.text(self.language,False))!=1:continue
+            key=self.curriculum.learned_key(entry,self.language)
+            if self.progress.is_learned(self.language,key):result.setdefault(key,entry)
+        return list(result.values())
+
+    def move_learned_page(self,amount):
+        self.learned_page+=amount
+
+    def learned_character_list(self):
+        entries=self.learned_character_entries()
+        self.learned_page=max(0,min(self.learned_page,max(0,math.ceil(len(entries)/24)-1)))
+        return self.column([self.heading("Learned characters",f"{len(entries)} unique learned character forms in {self.language.title()}"),
+            *([self.pagination(self.learned_page,len(entries),24,self.move_learned_page),*[self.entry_row(entry) for entry in entries[self.learned_page*24:(self.learned_page+1)*24]],self.pagination(self.learned_page,len(entries),24,self.move_learned_page)] if entries else [self.text("Mark characters Learned in the driller, dictionary, or after a quiz. They will appear here.",14,muted=True)])],spacing=14)
+
     def progress_view(self):
         summary=self.progress.summary(self.language,self.curriculum)
         state=self.progress.state(self.language)
@@ -784,6 +814,7 @@ class App:
             self.text("Core quiz trophies",22,bold=True),ft.Row([self.tag("🏆 "+cat.title) for cat in trophies],wrap=True) if trophies else self.text("No trophies yet.",14,muted=True),self.text("Recent completed sessions",22,bold=True)]
         for row in reversed(state["sessions"][-12:]):
             controls.append(self.panel([self.text(MODE_NAMES[row["mode"]],17,bold=True),self.text(f"{row['total']} cards · {row['finished_at'][:16].replace('T',' ')} UTC",13,muted=True)],padding=16))
+        controls.insert(2,self.learned_character_list())
         if self.progress_store.blocked or self.progress_store.recovery_snapshot:controls.append(self.button("Copy preserved browser data",self.show_storage_backup))
         return self.column(controls,spacing=20)
 

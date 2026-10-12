@@ -2,17 +2,13 @@
 
 A character-first Mandarin and Cantonese learning app, written in Python with **Flet 1.0.3**. Learn in small sets, drill pronunciation, and mark characters learned and earn trophies through one-pass recognition quizzes.
 
-## Changes in version 0.4.0
+## Learning and review
 
-Grind the **Whole 1,000-character track**, or filter the Character driller to **Correct**, **Almost correct**, **Incorrect**, or **Not attempted**. Outcomes reflect the latest answer for each glyph in the chosen language. Fully correct is green; matching pronunciation with the wrong/missing tone is amber; incorrect pronunciation is red. Numbered and accented Pinyin and accepted alternatives are supported, as is Jyutping.
+Character driller cards show pronunciation for every status: Correct, Almost correct, Incorrect and Not attempted. Mandarin uses Pinyin; Cantonese uses Jyutping. Every stats card has a **Learned** checkbox that saves immediately. Learned characters are listed under **Progress**, alongside the learned-character bar.
 
-Small grey examples appear under drill characters and in single-character cards. The shortest real example in the bundled curriculum is preferred; gaps use clearly labelled reference examples.
+Use the **Whole 1,000-character track** button or select categories. Latest pronunciation outcomes are stored per displayed glyph and language. A phonetic match with a wrong/missing tone is Almost correct. Completed quizzes show their score and ask which characters you know; correctness alone does not imply learned.
 
-After a quiz, **Which characters do you know?** lets you mark individual characters learned. A correct answer does not automatically imply learned. The review is paginated and can mark the current page only when you explicitly choose it. Dictionary Learned checkboxes and explicit flashcard self-assessments remain available.
-
-**Progress** focuses on characters learned. Accuracy appears on the immediate result only; new session history does not save scores. Existing legacy records, settings, learned marks and trophies remain preserved. Small flashcard sets still contain at least 15 cards, and recognition questions still accept one answer with correction and Next/Enter rather than requiring retries.
-
-See [UPDATE_0.4.0.md](UPDATE_0.4.0.md) for exact migration behavior and content limitations.
+Learning progress, drill outcomes, language/script settings and trophies use the existing browser storage key and survive normal deployments to the same website origin. Historical records are preserved; new completion records do not save accuracy. Backup/restore includes learned marks and outcomes. Keep the existing `.git` and `.venv` folders when replacing source files for an update.
 
 ## Start using it
 
@@ -110,7 +106,7 @@ Architecture:
 | `tools/build_curriculum.py` | Reproducible content preparation and font subsetting |
 | `tests/` | Scoring, curriculum, persistence, and actual Flet control/handler checks |
 
-See [THIRD_PARTY.md](THIRD_PARTY.md) for attribution, [RECOVERY_AND_STATUS.md](RECOVERY_AND_STATUS.md) for recovery history, and [BROWSER_AUDIT.md](BROWSER_AUDIT.md) for the 20-item Flet web audit and verification limits.
+See [THIRD_PARTY.md](THIRD_PARTY.md) for content attribution and licenses.
 
 ## Content notes
 
