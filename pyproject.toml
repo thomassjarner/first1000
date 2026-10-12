@@ -1,6 +1,6 @@
 [project]
 name = "first1000"
-version = "0.2.0"
+version = "0.2.1"
 description = "Character-first Mandarin and Cantonese practice, built with Python and Flet."
 requires-python = ">=3.10"
 dependencies = ["flet==1.0.3"]

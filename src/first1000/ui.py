@@ -286,24 +286,24 @@ class App:
             sample = " · ".join(self.curriculum.entries[eid].text(self.language, self.traditional) for eid in cat.entry_ids[:2])
             rows.append(ft.Container(ft.Row([
                 ft.Checkbox(value=cat.id in self.selected, on_change=self.event_action(self.select_category, lambda e, cid=cat.id: (cid, e.control.value))),
-                ft.Column([self.text(self.category_title(cat), 17, bold=True), self.text(f"{cat.theme} · {len(cat.entry_ids)} cards" + (" · 🏆" if won else ""), 12, muted=True), self.text(sample, 15, hanzi=True, max_lines=2)], expand=True, spacing=4),
-                self.button("Open", self.open_category, cat.id)], vertical_alignment=ft.CrossAxisAlignment.CENTER), padding=12, border=ft.Border.only(bottom=ft.BorderSide(1, self.colors["line"]))))
+                ft.Column([self.text(self.category_title(cat), 17, bold=True), self.text(f"{cat.theme} · {len(cat.entry_ids)} cards" + (" · 🏆" if won else ""), 12, muted=True), self.text(sample, 15, hanzi=True, max_lines=2)], expand=True, tight=True, spacing=4),
+                self.button("Open", self.open_category, cat.id)], vertical_alignment=ft.CrossAxisAlignment.CENTER), padding=12, border=ft.Border.only(bottom=ft.BorderSide(width=1, color=self.colors["line"]))))
         return ft.Column([self.text(f"{len(matches)} categories", 13, muted=True), self.pagination(self.category_page, len(matches), per_page, self.move_category_page), *rows, self.pagination(self.category_page, len(matches), per_page, self.move_category_page)], spacing=8)
 
     def move_category_page(self, amount):
         self.category_page += amount
 
     def categories(self):
-        query = ft.TextField(value=self.category_query, label="Search a situation, topic, word, or meaning", expand=True, on_change=lambda e: setattr(self,"category_query",e.control.value), on_submit=self.action(self.search_categories), border=ft.OutlineInputBorder(border_radius=12))
+        query = ft.TextField(value=self.category_query, label="Search a situation, topic, word, or meaning", expand=True, height=56, on_change=lambda e: setattr(self,"category_query",e.control.value), on_submit=self.action(self.search_categories), border=ft.OutlineInputBorder(border_radius=12))
         themes = sorted({cat.theme for cat in self.visible_categories()})
         return ft.Column([self.heading("Find something useful to practise", "Start with a real situation, browse a topic, or mix selected sets."),
-            ft.Row([query, self.button("Search", self.search_categories)], wrap=True),
+            ft.Row([query, self.button("Search", self.search_categories)], wrap=False, vertical_alignment=ft.CrossAxisAlignment.CENTER),
             ft.Row([self.button(label, self.set_category_filter, "category_kind", kind, primary=self.category_kind==kind) for label, kind in [("All", "all"), ("Situations", "situations"), ("Characters", "characters"), ("Vocabulary", "vocabulary"), ("Spoken expressions", "hong_kong")]], wrap=True),
             ft.Row([self.dropdown("Topic", self.category_theme, [("all","All topics"),*[(theme,theme) for theme in themes]], self.event_action(self.set_category_filter,lambda e:("category_theme",e.control.value))),
                 self.dropdown("Sort", self.category_sort, [("recommended","Recommended"),("name","Name A–Z"),("size","Small sets first"),("unfinished","Unfinished first")], self.event_action(self.set_category_filter,lambda e:("category_sort",e.control.value))),
                 self.button("Reset filters", self.reset_category_filters)], wrap=True),
             ft.Row([self.button("Select filtered sets", self.select_visible, True), self.button("Clear selection", self.select_visible, False)], wrap=True),
-            self.selection_bar(), self.category_grid()], spacing=18)
+            self.selection_bar(), self.category_grid()], spacing=18, tight=True)
 
     def adjacent_category(self, amount):
         matches = self.filtered_categories()
@@ -336,8 +336,8 @@ class App:
 
     def entry_row(self, entry):
         return ft.Container(ft.Row([
-            ft.Column([self.text(entry.text(self.language, self.traditional), 23, hanzi=True), self.text(entry.reading(self.language), 13, muted=True), self.text(entry.meaning, 14)], expand=True, spacing=4),
-            self.button("Details", self.show_entry, entry)], vertical_alignment=ft.CrossAxisAlignment.CENTER), padding=12, border=ft.Border.only(bottom=ft.BorderSide(1, self.colors["line"])))
+            ft.Column([self.text(entry.text(self.language, self.traditional), 23, hanzi=True), self.text(entry.reading(self.language), 13, muted=True), self.text(entry.meaning, 14)], expand=True, tight=True, spacing=4),
+            self.button("Details", self.show_entry, entry)], vertical_alignment=ft.CrossAxisAlignment.CENTER), padding=12, border=ft.Border.only(bottom=ft.BorderSide(width=1, color=self.colors["line"])))
 
     def show_entry(self, entry):
         self.dialog(entry.text(self.language, self.traditional), [self.entry_card(entry)])

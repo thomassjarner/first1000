@@ -108,3 +108,18 @@ def test_new_cantonese_progress_uses_new_targets():
     asyncio.run(app.answer_drill(app.session.current.readings('cantonese')[0]))
     assert app.progress.summary('cantonese',app.curriculum)['characters'] >= 1
     assert Progress.from_json(app.progress.export()).state('cantonese')['characters'][glyph]['correct'] == 1
+
+
+@pytest.mark.parametrize("width", [390, 1180])
+def test_category_search_has_bounded_height_and_valid_flex_parent(width):
+    app=make_app();app.page.width=width
+    view=app.categories()
+    rows=[control for control in walk(view) if isinstance(control,ft.Row)]
+    search_row=next(row for row in rows if any(isinstance(control,ft.TextField) for control in row.controls))
+    field=next(control for control in search_row.controls if isinstance(control,ft.TextField))
+    assert field.height==56 and field.expand
+    assert not search_row.wrap
+    for row in rows:
+        if row.wrap:
+            assert not any(control.expand for control in row.controls)
+    assert view.tight
