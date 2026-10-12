@@ -29,6 +29,9 @@ with tarfile.open(dist/"app.tar.gz") as tar:
         data=tar.extractfile(names[rel]).read()
         assert data==path.read_bytes(), f"Stale packaged code: {rel}"
         compile(data,rel,"exec")
+    for data_path in (root/"src/first1000/data").glob("*.json"):
+        data_rel=data_path.relative_to(root/"src").as_posix()
+        assert tar.extractfile(names[data_rel]).read()==data_path.read_bytes(), f"Stale packaged data: {data_rel}"
     rel="first1000/data/curriculum.json"
     data=tar.extractfile(names[rel]).read()
     assert data==(root/"src"/rel).read_bytes(), "Stale curriculum in build"

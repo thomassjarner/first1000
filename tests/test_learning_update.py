@@ -11,7 +11,7 @@ from test_flet_lifecycle import mounted_app
 
 
 def test_legacy_backup_adds_learned_field_without_resetting_scores():
-    old=Progress();old.record_answer('mandarin',True)
+    old=Progress();old.state('mandarin').update(attempts=1,correct=1)
     incoming=json.loads(old.export())
     for state in incoming['languages'].values():state.pop('learned')
     restored=Progress.from_json(json.dumps(incoming))

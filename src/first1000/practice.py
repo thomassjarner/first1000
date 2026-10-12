@@ -46,12 +46,22 @@ def normalize_reading(value: str, language: str = "mandarin") -> str:
     return "".join(syllables)
 
 
+def reading_status(value, accepted, language):
+    normalized=normalize_reading(value,language)
+    valid={normalize_reading(reading,language) for reading in accepted}
+    if normalized in valid:return "correct"
+    base=re.sub(r"[0-9]", "", normalized)
+    if base and any(base==re.sub(r"[0-9]", "", reading) for reading in valid):return "almost"
+    return "incorrect"
+
+
 @dataclass(frozen=True)
 class Answer:
     item_id: str
     correct: bool
     given: str
     accepted: tuple[str, ...]
+    status: str = ""
 
 
 class CoreSession:
@@ -170,8 +180,8 @@ class DrillSession:
         if not value.strip():
             raise ValueError("Enter a reading with its tone number")
         accepted = self.current.readings(self.language)
-        correct = normalize_reading(value, self.language) in {normalize_reading(x, self.language) for x in accepted}
-        self.pending = Answer(self.current.glyph, correct, value.strip(), accepted)
+        status = reading_status(value,accepted,self.language)
+        self.pending = Answer(self.current.glyph,status=="correct",value.strip(),accepted,status)
         self.answers.append(self.pending)
         return self.pending
 

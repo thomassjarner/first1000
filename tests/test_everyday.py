@@ -107,7 +107,7 @@ def test_new_cantonese_progress_uses_new_targets():
     glyph=app.session.current.glyph
     asyncio.run(app.answer_drill(app.session.current.readings('cantonese')[0]))
     assert app.progress.summary('cantonese',app.curriculum)['characters'] >= 1
-    assert Progress.from_json(app.progress.export()).state('cantonese')['characters'][glyph]['correct'] == 1
+    assert Progress.from_json(app.progress.export()).drill_status('cantonese',app.curriculum.drill_key(glyph)) == 'correct'
 
 
 @pytest.mark.parametrize("width", [320, 390, 768, 1180, 1920])

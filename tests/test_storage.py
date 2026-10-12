@@ -36,8 +36,7 @@ def run(coro):
 
 def scored(attempts=3):
     progress = Progress()
-    for _ in range(attempts):
-        progress.record_answer("mandarin", True)
+    progress.state("mandarin").update(attempts=attempts,correct=attempts)
     progress.settings.update(language="cantonese", traditional=True, dark=True)
     return progress
 

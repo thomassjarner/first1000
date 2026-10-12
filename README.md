@@ -2,19 +2,17 @@
 
 A character-first Mandarin and Cantonese learning app, written in Python with **Flet 1.0.3**. Learn in small sets, drill pronunciation, and mark characters learned and earn trophies through one-pass recognition quizzes.
 
-## Changes in version 0.3.0
+## Changes in version 0.4.0
 
-**Learned** checkboxes in dictionary rows and Details save your explicit learning status. Learned and Still learning filters make it easy to find the right cards. Status is separate by language and shared across script forms. Progress shows learned target characters separately from characters merely practised. On flashcards, **I knew it** also marks the card learned; **Still learning** clears that mark.
+Grind the **Whole 1,000-character track**, or filter the Character driller to **Correct**, **Almost correct**, **Incorrect**, or **Not attempted**. Outcomes reflect the latest answer for each glyph in the chosen language. Fully correct is green; matching pronunciation with the wrong/missing tone is amber; incorrect pronunciation is red. Numbered and accented Pinyin and accepted alternatives are supported, as is Jyutping.
 
-All flashcard/practice sets now have at least **15 cards**. Small situations combine their four original sentences with related vocabulary. Small vocabulary groups add related words from other levels. Original category memberships and existing trophy fingerprints stay intact; supplementary practice membership is stored separately in `practice_sets.json`.
+Small grey examples appear under drill characters and in single-character cards. The shortest real example in the bundled curriculum is preferred; gaps use clearly labelled reference examples.
 
-The handwriting-from-English quiz is replaced by **Chinese-to-meaning recognition**, with sentence context when available. Each card accepts one answer, shows the correction and reading, then continues with Next (or Enter after feedback). Matching mistakes also finish the attempted card and show the correct pair; each pair is scored once. Character and sentence drills retain the same one-answer correction/continue flow.
+After a quiz, **Which characters do you know?** lets you mark individual characters learned. A correct answer does not automatically imply learned. The review is paginated and can mark the current page only when you explicitly choose it. Dictionary Learned checkboxes and explicit flashcard self-assessments remain available.
 
-**Pick all categories** selects every category for the current language, even when the list is filtered. Dictionary sort buttons reverse direction when clicked again; Frequency toggles most-common/least-common first, while unranked entries stay last.
+**Progress** focuses on characters learned. Accuracy appears on the immediate result only; new session history does not save scores. Existing legacy records, settings, learned marks and trophies remain preserved. Small flashcard sets still contain at least 15 cards, and recognition questions still accept one answer with correction and Next/Enter rather than requiring retries.
 
-The responsive layout and page-edge scrollbar from 0.2.2 remain. Cantonese still has a separate provisional character order based on spoken essentials and bundled examples, rather than a representative general-language frequency corpus. Twelve situations retain 48 original Mandarin/spoken Cantonese sentences.
-
-See [UPDATE_0.3.0.md](UPDATE_0.3.0.md) for details.
+See [UPDATE_0.4.0.md](UPDATE_0.4.0.md) for exact migration behavior and content limitations.
 
 ## Start using it
 

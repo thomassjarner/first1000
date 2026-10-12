@@ -16,7 +16,7 @@ def now() -> str:
 
 
 def language_state() -> dict:
-    return {"attempts": 0, "correct": 0, "trophies": {}, "characters": {}, "sessions": [], "flashcards": 0, "learned": {}}
+    return {"attempts": 0, "correct": 0, "trophies": {}, "characters": {}, "sessions": [], "flashcards": 0, "learned": {}, "drill_outcomes": {}}
 
 
 class Progress:
@@ -25,6 +25,7 @@ class Progress:
 
         for language in LANGUAGES:
             self.data["languages"][language].setdefault("learned", {})
+            self.data["languages"][language].setdefault("drill_outcomes", {})
 
     def is_learned(self, language, key):
         return key in self.state(language)["learned"]
@@ -43,20 +44,36 @@ class Progress:
     def state(self, language: str) -> dict:
         return self.data["languages"][language]
 
-    def record_answer(self, language: str, correct: bool, character: Character | None = None) -> None:
-        state = self.state(language)
-        state["attempts"] += 1
-        state["correct"] += int(correct)
+    def migrate_drill_outcomes(self,curriculum):
+        for language in LANGUAGES:
+            inferred={}
+            state=self.state(language)
+            for glyph,record in state["characters"].items():
+                if not record["attempts"]:continue
+                key=curriculum.drill_key(glyph)
+                status="correct" if record["correct"]==record["attempts"] else "incorrect"
+                if key not in inferred or status=="incorrect":inferred[key]=status
+            for key,status in inferred.items():
+                state["drill_outcomes"].setdefault(key,{"status":status,"updated_at":self.data.get("updated_at",now())})
+
+    def drill_status(self,language,key):
+        return self.state(language)["drill_outcomes"].get(key,{}).get("status","unseen")
+
+    def record_answer(self,language,correct,character=None,status=None,status_key=None):
+        # Session accuracy lives on the active session/result, not in saved totals.
+        # Retain historical aggregate fields unchanged for old backups.
         if character:
-            stats = state["characters"].setdefault(character.glyph, {"attempts": 0, "correct": 0, "target_ids": list(character.target_ids)})
-            stats["attempts"] += 1
-            stats["correct"] += int(correct)
-            stats["target_ids"] = list(character.target_ids)
-        self.data["updated_at"] = now()
+            state=self.state(language)
+            record=state["characters"].setdefault(character.glyph,{"attempts":1,"correct":0,"target_ids":list(character.target_ids)})
+            record["attempts"]=max(record["attempts"],1)
+            record["target_ids"]=list(character.target_ids)
+            key=status_key or "glyph:"+character.glyph
+            state["drill_outcomes"][key]={"status":status or ("correct" if correct else "incorrect"),"updated_at":now()}
+        self.data["updated_at"]=now()
 
     def finish(self, language: str, mode: str, total: int, correct: int, attempts: int, category_ids: list[str], perfect: bool = False, curriculum: Curriculum | None = None) -> list[str]:
         state = self.state(language)
-        state["sessions"].append({"mode": mode, "total": total, "correct": correct, "attempts": attempts, "category_ids": list(category_ids), "finished_at": now()})
+        state["sessions"].append({"mode":mode,"total":total,"category_ids":list(category_ids),"finished_at":now(),"score_saved":False})
         state["sessions"] = state["sessions"][-300:]
         earned = []
         if mode == "core" and perfect and curriculum:
@@ -76,7 +93,7 @@ class Progress:
         state = self.state(language)
         practised = set(target for record in state["characters"].values() if record["attempts"] for target in record["target_ids"])
         practised &= set(curriculum.targets(language))
-        return {"learned": sum(key in state["learned"] for key in curriculum.target_learned_keys(language)), "learned_entries": len(state["learned"]), "attempts": state["attempts"], "accuracy": state["correct"] / state["attempts"] if state["attempts"] else None, "trophies": sum(self.has_trophy(language, cat.id, curriculum) for cat in curriculum.categories), "characters": len(practised), "sessions": len(state["sessions"])}
+        return {"learned": sum(key in state["learned"] for key in curriculum.target_learned_keys(language)), "learned_entries": len(state["learned"]), "attempts": state["attempts"], "accuracy": None, "trophies": sum(self.has_trophy(language, cat.id, curriculum) for cat in curriculum.categories), "characters": len(practised), "sessions": len(state["sessions"])}
 
     def export(self) -> str:
         return json.dumps(self.data, ensure_ascii=False, indent=2, sort_keys=True)
@@ -106,6 +123,9 @@ class Progress:
             learned = state.get("learned", {})
             if not isinstance(learned, dict) or len(learned) > 20000 or any(not isinstance(key, str) or not 1 <= len(key) <= 256 or not isinstance(value, str) or not 1 <= len(value) <= 64 for key, value in learned.items()):
                 raise ValueError("Invalid learned records")
+            outcomes=state.get("drill_outcomes",{})
+            if not isinstance(outcomes,dict) or len(outcomes)>20000 or any(not isinstance(key,str) or not 1<=len(key)<=256 or not isinstance(record,dict) or record.get("status") not in ("correct","almost","incorrect") or not isinstance(record.get("updated_at"),str) for key,record in outcomes.items()):
+                raise ValueError("Invalid drill outcomes")
             for key in ("attempts", "correct", "flashcards"):
                 value = state.get(key)
                 if type(value) is not int or value < 0 or value > 100_000_000:
@@ -127,9 +147,9 @@ class Progress:
             for session in sessions:
                 if not isinstance(session, dict) or session.get("mode") not in ("core", "drill", "match", "flashcards", "sentence"):
                     raise ValueError("Invalid session record")
-                for key in ("total", "correct", "attempts"):
+                for key in (("total",) if session.get("score_saved") is False else ("total","correct","attempts")):
                     if type(session.get(key)) is not int or not 0 <= session[key] <= 100_000_000:
                         raise ValueError("Invalid session counts")
-                if session["correct"] > session["attempts"] or not isinstance(session.get("finished_at"), str) or not isinstance(session.get("category_ids"), list) or any(not isinstance(x, str) for x in session["category_ids"]):
+                if (session.get("score_saved") is not False and session["correct"] > session["attempts"]) or not isinstance(session.get("finished_at"), str) or not isinstance(session.get("category_ids"), list) or any(not isinstance(x, str) for x in session["category_ids"]):
                     raise ValueError("Invalid session details")
         return cls(copy.deepcopy(incoming))

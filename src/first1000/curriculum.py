@@ -118,6 +118,32 @@ class Curriculum:
             for entry_id in cat.entry_ids:
                 self.entry_categories[entry_id].append(cat)
 
+    def drill_key(self,glyph):
+        return "glyph:"+glyph
+
+    def character_key(self, glyph):
+        if not hasattr(self, "character_aliases"):
+            self.character_aliases=json.loads(Path(__file__).with_name("data").joinpath("character_aliases.json").read_text(encoding="utf-8"))
+        return "character:"+self.character_aliases.get(glyph,glyph)
+
+    def character_example(self, glyph, language, traditional):
+        cache_key=(language,traditional)
+        if not hasattr(self,"character_examples"):self.character_examples={}
+        if cache_key not in self.character_examples:
+            examples={}
+            for entry in self.entries.values():
+                example=entry.example(language,traditional)
+                text=example.get("text","")
+                if not text or example.get("source")=="Reference":continue
+                for char in set(text):
+                    if "\u3400"<=char<="\u9fff" and (char not in examples or len(text)<len(examples[char]["text"])):
+                        examples[char]={**example,"entry_id":entry.id}
+            self.character_examples[cache_key]=examples
+        found=self.character_examples[cache_key].get(glyph)
+        if found:return found
+        text=(f"「{glyph}」是什麼意思？" if traditional else f"「{glyph}」是什么意思？") if language=="mandarin" else (f"「{glyph}」係咩意思？" if traditional else f"「{glyph}」系咩意思？")
+        return {"text":text,"english":"What does this character mean?","source":"Reference"}
+
     def practice_entries(self, category_ids):
         path = Path(__file__).with_name("data") / "practice_sets.json"
         if not hasattr(self, "practice_sets"):
