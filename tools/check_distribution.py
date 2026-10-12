@@ -42,6 +42,10 @@ with tarfile.open(dist/"app.tar.gz") as tar:
     extra=json.loads(extra_bytes)
     assert len(extra["cantonese_targets"])==1000
     assert len([entry for entry in extra["entries"] if entry["kind"]=="sentence"])==48
+    practice_rel="first1000/data/practice_sets.json"
+    practice_bytes=tar.extractfile(names[practice_rel]).read()
+    assert practice_bytes==(root/"src"/practice_rel).read_bytes(), "Stale expanded practice sets"
+    assert all(len(ids)>=15 for ids in json.loads(practice_bytes)["sets"].values())
     assert tar.extractfile(names["requirements.txt"]).read().strip()==b"flet==1.0.3", "Unexpected runtime dependency"
 if 'flet.noCdn=true' in html:
     runtime=dist/"pyodide"

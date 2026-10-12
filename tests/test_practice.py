@@ -17,19 +17,24 @@ def test_mandarin_normalization(given,expected):
     assert normalize_reading(given)==expected
 
 
-def test_core_wrong_stays_and_disqualifies_trophy(curriculum):
+def test_core_wrong_locks_then_advances_and_disqualifies_trophy(curriculum):
     entries=curriculum.selected_entries(["core-01"])
     session=CoreSession(entries,"mandarin",False,shuffle=False)
     first=session.current
-    with pytest.raises(ValueError): session.answer(" ")
+    with pytest.raises(ValueError):session.answer(" ")
     assert session.attempts==0
-    assert not session.answer("错误答案").correct
+    wrong=next(meaning for meaning in session.options() if meaning!=first.meaning)
+    assert not session.answer(wrong).correct
+    with pytest.raises(ValueError):session.answer(first.meaning)
     assert session.current.id==first.id
-    while not session.finished: assert session.answer(session.current.text("mandarin",False)).correct
-    assert not session.perfect
-    assert session.attempts==26 and session.mistakes==1
+    session.advance()
+    while not session.finished:
+        assert session.answer(session.current.meaning).correct
+        session.advance()
+    assert not session.perfect and session.correct_count==24
+    assert session.attempts==25 and session.mistakes==1
     progress=Progress()
-    progress.finish("mandarin","core",25,25,26,["core-01"],session.perfect,curriculum)
+    progress.finish("mandarin","core",25,24,25,["core-01"],session.perfect,curriculum)
     assert not progress.has_trophy("mandarin","core-01",curriculum)
 
 
@@ -40,7 +45,7 @@ def test_fixed_questions_perfect_trophy_language_separation(curriculum):
     assert {x.id for x in a.items}=={x.id for x in b.items} and [x.id for x in a.items]!=[x.id for x in b.items]
     progress=Progress()
     while not a.finished:
-        result=a.answer(a.current.text("mandarin",True));progress.record_answer("mandarin",result.correct)
+        result=a.answer(a.current.meaning);progress.record_answer("mandarin",result.correct);a.advance()
     progress.finish("mandarin","core",50,50,50,["core-01","core-02"],a.perfect,curriculum)
     assert progress.has_trophy("mandarin","core-01",curriculum)
     assert progress.has_trophy("mandarin","core-02",curriculum)
@@ -84,9 +89,11 @@ def test_match_errors_and_completion(curriculum):
     session=MatchSession(curriculum.selected_entries(["core-01"]),"mandarin",False,random.Random(2))
     assert len({x.meaning for x in session.items})==len(session.items)
     assert not session.answer(session.items[0].id,session.items[1].id).correct
-    assert not session.matched
-    for item in session.items:assert session.answer(item.id,item.id).correct
-    assert session.finished and session.attempts==len(session.items)+1
+    assert session.items[0].id in session.matched
+    with pytest.raises(ValueError):session.answer(session.items[0].id,session.items[0].id)
+    for item in session.items[1:]:assert session.answer(item.id,item.id).correct
+    assert session.finished and session.attempts==len(session.items)
+    assert session.correct_count==len(session.items)-1
 
 
 def test_progress_roundtrip_and_target_variants(curriculum):

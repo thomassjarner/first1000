@@ -107,8 +107,10 @@ def test_mounted_navigation_practice_and_dialogs_serialize(width):
                 app.start(mode, ["core-01"])
                 app.render()
                 if mode == "core":
-                    app.input_value = app.session.current.text("cantonese", True)
+                    app.input_value = app.session.current.meaning
                     await app.answer_core()
+                    app.render()
+                    await app.next_core()
                 elif mode == "drill":
                     await app.answer_drill(app.session.current.readings("cantonese")[0])
                     app.render()

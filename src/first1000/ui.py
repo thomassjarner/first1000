@@ -15,7 +15,7 @@ from .storage import ProgressStore
 
 LIGHT = dict(bg="#F6F5F0", surface="#FFFFFF", ink="#202F2C", muted="#64746E", line="#DDE5DE", accent="#15756C", soft="#E6F2EA", red="#A52E37", redbg="#FCE8E9", green="#17683D", greenbg="#DDF4E5")
 DARK = dict(bg="#121D1B", surface="#1D2B27", ink="#E9F2EC", muted="#A9BAB1", line="#354740", accent="#7FD7BE", soft="#263E35", red="#FFAFB5", redbg="#4D272E", green="#9AE2B2", greenbg="#244633")
-MODE_NAMES = {"core": "Core quiz", "drill": "Character drill", "match": "Matching game", "flashcards": "Flashcards", "sentence": "Sentence practice"}
+MODE_NAMES = {"core": "Recognition quiz", "drill": "Character drill", "match": "Matching game", "flashcards": "Flashcards", "sentence": "Sentence practice"}
 
 
 class App:
@@ -34,6 +34,8 @@ class App:
         self.category_theme, self.category_sort = "all", "recommended"
         self.dictionary_query, self.dictionary_sort = "", "frequency"
         self.dictionary_category, self.dictionary_hsk, self.dictionary_page = "all", "all", 0
+        self.dictionary_reverse = False
+        self.dictionary_learned = "all"
         self.drill_mode = "typed"
         self.session = None
         self.session_ids: list[str] = []
@@ -140,7 +142,9 @@ class App:
     async def on_keyboard(self, event):
         if getattr(event, "key", "") != "Enter" or any(getattr(event, key, False) for key in ("ctrl", "alt", "meta", "shift")):
             return
-        if self.ready and self.screen == "drill" and self.drill_mode == "choice":
+        if self.ready and self.screen == "core" and self.session.pending is not None:
+            await self.action(self.next_core)()
+        elif self.ready and self.screen == "drill" and self.drill_mode == "choice":
             await self.action(self.submit_drill)()
 
     def text(self, value, size=16, muted=False, bold=False, hanzi=False, **kwargs):
@@ -207,7 +211,7 @@ class App:
         if self.storage_error:
             controls.append(self.panel([self.text(self.storage_error, 13)], color=self.colors["redbg"], padding=14))
         controls += [builders[self.screen](), ft.Container(height=12),
-            self.text("First 1000 · v0.2.2 · Mandarin and Cantonese scores stay separate. HSK labels use the 2012 syllabus.", 11, muted=True),
+            self.text("First 1000 · v0.3.0 · Mandarin and Cantonese scores stay separate. HSK labels use the 2012 syllabus.", 11, muted=True),
             self.button("Content sources & notes", self.show_sources)]
         self.root.controls = [ft.Container(self.column(controls, spacing=24, horizontal_alignment=ft.CrossAxisAlignment.STRETCH), width=self.content_width, padding=ft.Padding.symmetric(vertical=24, horizontal=10))]
         self.page.update()
@@ -221,7 +225,7 @@ class App:
             ft.Row([self.button("Start a 25-character drill", self.start, "drill", ["cant-core-01" if self.language == "cantonese" else "core-01"], primary=True), self.button("Explore categories", self.navigate, "categories")], wrap=True),
             ft.Row([self.text("學" if self.traditional else "学", 72, hanzi=True), self.column([self.text("Characters take the lead.", 18, bold=True), self.text("Pronunciation appears when it helps you learn.", 13, muted=True)])], wrap=True)
         ], color=self.colors["soft"], padding=28)
-        values = [(f'{summary["characters"]}/1000', "Characters practised"), (f'{summary["trophies"]}/{len(self.curriculum.categories)}', "Core trophies"),
+        values = [(f'{summary["learned"]}/1000', "Characters marked learned"), (f'{summary["trophies"]}/{len(self.curriculum.categories)}', "Core trophies"),
                   ("—" if summary["accuracy"] is None else f'{summary["accuracy"]:.0%}', "Answer accuracy"), (str(summary["sessions"]), "Completed sessions")]
         stats = ft.ResponsiveRow([self.panel([self.text(value, 27, bold=True), self.text(label, 12, muted=True)], padding=18, col={"xs": 6, "md": 3}) for value, label in values], spacing=12, run_spacing=12)
         features = [
@@ -249,7 +253,7 @@ class App:
         if self.category_sort == "name":
             return sorted(categories, key=lambda cat: self.category_title(cat).lower())
         if self.category_sort == "size":
-            return sorted(categories, key=lambda cat: (len(cat.entry_ids), self.category_title(cat)))
+            return sorted(categories, key=lambda cat: (len(self.curriculum.practice_entries([cat.id])), self.category_title(cat)))
         if self.category_sort == "unfinished":
             return sorted(categories, key=lambda cat: (self.progress.has_trophy(self.language, cat.id, self.curriculum), self.category_title(cat)))
         order = {"situations": 0, "cantonese_characters": 1, "characters": 1, "hong_kong": 2, "vocabulary": 3}
@@ -269,6 +273,9 @@ class App:
         else:
             self.selected.discard(category_id)
 
+    def pick_all(self):
+        self.selected = {cat.id for cat in self.visible_categories()}
+
     def select_visible(self, all_selected=True):
         if all_selected:
             self.selected.update(x.id for x in self.filtered_categories())
@@ -283,12 +290,12 @@ class App:
         self.render()
 
     def selection_bar(self, modes=True):
-        chars = self.curriculum.selected_characters(self.selected, self.language, self.traditional)
-        entries = self.curriculum.selected_entries(self.selected)
+        chars = self.curriculum.selected_characters(self.selected, self.language, self.traditional, enriched=True)
+        entries = self.curriculum.practice_entries(self.selected)
         controls = [self.text(f"{len(self.selected)} categories selected · {len(entries)} cards · {len(chars)} unique characters", 14, bold=True)]
         if modes:
             controls.append(ft.Row([self.button(label, self.start, mode, list(self.selected), primary=mode=="core", disabled=not self.selected) for label,mode in
-                [("Flashcards", "flashcards"), ("Core quiz", "core"), ("Drill characters", "drill"), ("Matching game", "match")]], wrap=True))
+                [("Flashcards", "flashcards"), ("Recognition quiz", "core"), ("Drill characters", "drill"), ("Matching game", "match")]], wrap=True))
         if modes:
             controls.append(self.button("Practise sentence meanings", self.start, "sentence", list(self.selected), disabled=not any(entry.kind == "sentence" for entry in entries)))
         return self.panel(controls, color=self.colors["soft"], padding=18)
@@ -302,7 +309,7 @@ class App:
             won=self.progress.has_trophy(self.language,cat.id,self.curriculum)
             sample=" · ".join(self.curriculum.entries[eid].text(self.language,self.traditional) for eid in cat.entry_ids[:2])
             checkbox=ft.Checkbox(value=cat.id in self.selected,on_change=self.event_action(self.select_category,lambda e,cid=cat.id:(cid,e.control.value)))
-            label=self.column([self.text(self.category_title(cat),17,bold=True),self.text(f"{cat.theme} · {len(cat.entry_ids)} cards"+(" · 🏆" if won else ""),12,muted=True)],expand=True,spacing=4)
+            label=self.column([self.text(self.category_title(cat),17,bold=True),self.text(f"{cat.theme} · {len(self.curriculum.practice_entries([cat.id]))} cards"+(" · 🏆" if won else ""),12,muted=True)],expand=True,spacing=4)
             preview=self.text(sample,15,hanzi=True,max_lines=2)
             opened=self.button("Open",self.open_category,cat.id)
             if self.narrow:
@@ -336,7 +343,7 @@ class App:
             ft.ResponsiveRow([query,search_button],spacing=12,run_spacing=12),
             ft.ResponsiveRow(type_buttons,spacing=8,run_spacing=8),
             ft.ResponsiveRow([topic,sort],spacing=12,run_spacing=12),
-            ft.Row([self.button("Reset filters",self.reset_category_filters),self.button("Select filtered sets",self.select_visible,True),self.button("Clear selection",self.select_visible,False)],wrap=True,run_spacing=8),
+            ft.Row([self.button("Reset filters",self.reset_category_filters),self.button("Pick all categories",self.pick_all),self.button("Select filtered sets",self.select_visible,True),self.button("Clear selection",self.select_visible,False)],wrap=True,run_spacing=8),
             self.selection_bar(),self.category_grid()],spacing=16,horizontal_alignment=ft.CrossAxisAlignment.STRETCH)
 
     def adjacent_category(self, amount):
@@ -354,9 +361,9 @@ class App:
         won = self.progress.has_trophy(self.language,cat.id,self.curriculum)
         matches = self.filtered_categories()
         position = next((i for i, item in enumerate(matches) if item.id == cat.id), -1)
-        return self.column([ft.Row([self.button("← All categories", self.navigate, "categories"), self.button("← Previous set", self.adjacent_category, -1, disabled=position<=0), self.button("Next set →", self.adjacent_category, 1, disabled=position<0 or position+1>=len(matches))], wrap=True), self.heading(self.category_title(cat), cat.description.replace("Hong Kong Cantonese", "Cantonese")), self.tag("🏆 Core quiz completed · 1/1" if won else "Core quiz · 0/1 completed"),
-            ft.Row([self.button(label,self.start,mode,[cat.id],primary=mode=="core") for label,mode in [("Train flashcards","flashcards"),("Write the characters · Core quiz","core"),("Character drill","drill"),("Matching game","match")]], wrap=True),
-            *([self.button("Practise sentence meanings", self.start, "sentence", [cat.id], primary=True)] if cat.kind == "situations" else []), self.text("Category dictionary",22,bold=True), *[self.entry_row(self.curriculum.entries[x]) for x in cat.entry_ids]], spacing=18)
+        return self.column([ft.Row([self.button("← All categories", self.navigate, "categories"), self.button("← Previous set", self.adjacent_category, -1, disabled=position<=0), self.button("Next set →", self.adjacent_category, 1, disabled=position<0 or position+1>=len(matches))], wrap=True), self.heading(self.category_title(cat), cat.description.replace("Hong Kong Cantonese", "Cantonese") + (" · Expanded with related vocabulary from other levels." if len(self.curriculum.practice_entries([cat.id])) > len(cat.entry_ids) else "")), self.tag("🏆 Core quiz completed · 1/1" if won else "Core quiz · 0/1 completed"),
+            ft.Row([self.button(label,self.start,mode,[cat.id],primary=mode=="core") for label,mode in [("Train flashcards","flashcards"),("Recognition quiz","core"),("Character drill","drill"),("Matching game","match")]], wrap=True),
+            *([self.button("Practise sentence meanings", self.start, "sentence", [cat.id], primary=True)] if cat.kind == "situations" else []), self.text("Category dictionary",22,bold=True), *[self.entry_row(entry) for entry in self.curriculum.practice_entries([cat.id])]], spacing=18)
 
     def entry_card(self, entry):
         ex = entry.example(self.language, self.traditional)
@@ -366,11 +373,19 @@ class App:
             *([self.text(entry.data["usage_note"],12,muted=True)] if self.language=="cantonese" and entry.data.get("usage_note") else []),
             self.text(ex["text"],18,hanzi=True),self.text(ex["english"],13,muted=True),
             self.text(("Reference example" if ex["source"]=="Reference" else "Original example" if ex["source"]=="Original" else "Tatoeba example") + " · " + (entry.data.get("cantonese_register", "") if self.language=="cantonese" else "Mandarin"),11,muted=True),
-            self.button("Example attribution",self.show_attribution,entry)], padding=18)
+            self.learned_control(entry),self.button("Example attribution",self.show_attribution,entry)], padding=18)
+
+    async def mark_learned(self, entry, value):
+        self.progress.set_learned(self.language,self.curriculum.learned_key(entry,self.language),value)
+        await self.save()
+
+    def learned_control(self, entry):
+        key=self.curriculum.learned_key(entry,self.language)
+        return ft.Checkbox(label="Learned",value=self.progress.is_learned(self.language,key),on_change=self.event_action(self.mark_learned,lambda event:(entry,event.control.value)))
 
     def entry_row(self, entry):
         details=self.button("Details",self.show_entry,entry)
-        text=self.column([self.text(entry.text(self.language,self.traditional),23,hanzi=True),self.text(entry.reading(self.language),13,muted=True),self.text(entry.meaning,14)],spacing=4)
+        text=self.column([self.text(entry.text(self.language,self.traditional),23,hanzi=True),self.text(entry.reading(self.language),13,muted=True),self.text(entry.meaning,14),self.learned_control(entry)],spacing=4)
         if self.narrow:
             content=self.column([text,details],spacing=8)
         else:
@@ -427,14 +442,32 @@ class App:
         pages=max(1,math.ceil(count/per_page))
         return ft.Row([self.button("← Previous",move,-1,disabled=page<=0),self.text(f"Page {page+1} of {pages}",13,muted=True),self.button("Next →",move,1,disabled=page+1>=pages)], wrap=True)
 
-    def dictionary(self):
+    def sort_dictionary(self, order):
+        self.dictionary_reverse = not self.dictionary_reverse if order == self.dictionary_sort else False
+        self.dictionary_sort=order
+        self.dictionary_page=0
+
+    def dictionary_entries(self):
         entries=self.curriculum.dictionary(self.dictionary_query,self.language,self.traditional,self.dictionary_sort,self.dictionary_category,self.dictionary_hsk)
         entries=[entry for entry in entries if entry.kind != ("character" if self.language == "cantonese" else "cantonese_character")]
+        if self.dictionary_learned != "all":
+            known=self.dictionary_learned=="learned"
+            entries=[entry for entry in entries if self.progress.is_learned(self.language,self.curriculum.learned_key(entry,self.language))==known]
+        if self.dictionary_reverse:
+            if self.dictionary_sort=="frequency":
+                entries=list(reversed([entry for entry in entries if entry.data.get("frequency")]))+[entry for entry in entries if not entry.data.get("frequency")]
+            else:entries.reverse()
+        return entries
+
+    def dictionary(self):
+        entries=self.dictionary_entries()
         self.dictionary_page=max(0,min(self.dictionary_page,max(0,math.ceil(len(entries)/30)-1)))
         search=ft.TextField(value=self.dictionary_query,label="Search characters, reading, meaning, or category",expand=True,on_change=lambda e:setattr(self,"dictionary_query",e.control.value),on_submit=self.action(self.search_dictionary),border=ft.OutlineInputBorder(border_radius=12))
         return self.column([self.heading("Your whole dictionary", "Words, sentences, and character cards. Open Details for examples and source notes."),
             ft.Row([search,self.button("Search",self.search_dictionary)], vertical_alignment=ft.CrossAxisAlignment.END),
-            ft.Row([self.dropdown("Sort by",self.dictionary_sort,[("frequency","Frequency"),("hsk","HSK level"),("alphabetical","Reading A–Z"),("meaning","English A–Z"),("category","Category")],lambda e:self.set_dictionary_filter("dictionary_sort",e.control.value)),
+            ft.Row([self.button(label+(" ↓" if self.dictionary_reverse else " ↑") if key==self.dictionary_sort else label,self.sort_dictionary,key,primary=key==self.dictionary_sort) for key,label in [("frequency","Frequency"),("hsk","HSK level"),("alphabetical","Reading"),("meaning","Meaning"),("category","Category")]],wrap=True),
+            self.text("Click the active sort again to reverse it. Frequency ↑ = most common first; ↓ = least common first. Unranked entries stay last.",12,muted=True),
+            ft.Row([self.dropdown("Learning",self.dictionary_learned,[("all","All entries"),("learned","Learned"),("learning","Still learning")],lambda e:self.set_dictionary_filter("dictionary_learned",e.control.value)),
                 self.dropdown("Level",self.dictionary_hsk,[("all","All levels"),*[(str(i),f"HSK {i}") for i in range(1,5)],("hong_kong","Spoken expressions")],lambda e:self.set_dictionary_filter("dictionary_hsk",e.control.value)),
                 self.dropdown("Category",self.dictionary_category,[("all","All categories"),*[(x.id,x.title) for x in self.visible_categories()]],lambda e:self.set_dictionary_filter("dictionary_category",e.control.value),width=300)],wrap=True),
             self.text(f"{len(entries):,} entries · " + ("Cantonese character cards use their provisional learning order; vocabulary ranks come from the original sources." if self.language == "cantonese" else "Frequency uses source ranks; unranked sentences appear last."),13,muted=True),
@@ -449,21 +482,21 @@ class App:
         return self.column([self.heading("Character driller", "Each unique displayed character appears once. Recorded alternative readings are accepted."),
             ft.Row([self.button("Type the reading",self.set_drill_mode,"typed",primary=self.drill_mode=="typed"),self.button("8-choice mode",self.set_drill_mode,"choice",primary=self.drill_mode=="choice")],wrap=True),
             self.selection_bar(False),self.button("Start drill →",self.start,"drill",list(self.selected),primary=True,disabled=not self.selected),
-            self.button("Choose categories",self.navigate,"categories"),self.text("Current selected sets",20,bold=True),
-            ft.Row([self.tag(self.curriculum.category_map[x].title) for x in self.selected],wrap=True),
+            self.button("Choose categories",self.navigate,"categories"),self.button("Pick all categories",self.pick_all),self.text("Current selected sets",20,bold=True),
+            ft.Row([self.tag(self.curriculum.category_map[x].title) for x in sorted(self.selected)[:8]],wrap=True),self.text(f"{len(self.selected)} sets selected"+(" · showing the first 8 here" if len(self.selected)>8 else ""),12,muted=True),
             self.text("Mandarin: peng2, péng, lü4, or lv4. Cantonese: numbered Jyutping, such as pang4. Your language and script stay fixed during a session.",14,muted=True)],spacing=20)
 
     def start(self, mode, category_ids):
         ids=[x.id for x in self.curriculum.categories if x.id in set(category_ids)]
-        entries=self.curriculum.selected_entries(ids)
+        entries=self.curriculum.practice_entries(ids)
         self.feedback,self.feedback_correct,self.input_value="",None,""
         self.result=None
         if mode=="sentence":
             self.session=SentenceSession(entries)
         elif mode=="core":
-            self.session=CoreSession(entries,self.language,self.traditional)
+            self.session=CoreSession(entries,self.language,self.traditional,meaning_pool=list(self.curriculum.entries.values()))
         elif mode=="drill":
-            chars=self.curriculum.selected_characters(ids,self.language,self.traditional)
+            chars=self.curriculum.selected_characters(ids,self.language,self.traditional,enriched=True)
             self.session=DrillSession(chars,self.language,list(self.curriculum.characters.values()))
         elif mode=="match":
             self.session=MatchSession(entries,self.language,self.traditional)
@@ -487,20 +520,23 @@ class App:
         color=self.colors["greenbg"] if self.feedback_correct else self.colors["redbg"] if self.feedback_correct is False else self.colors["soft"]
         return self.panel([self.text(self.feedback,15,hanzi=any("\u3400"<=x<="\u9fff" for x in self.feedback))],color=color,padding=16)
 
-    async def answer_core(self):
+    async def answer_core(self, value=None):
         session=self.session
-        answer=session.answer(self.input_value)
+        entry=session.current
+        answer=session.answer(value if value is not None else self.input_value)
         self.progress.record_answer(self.language,answer.correct)
         self.feedback_correct=answer.correct
-        if answer.correct:
-            self.input_value=""
-            self.feedback="Correct. Keep going!"
-            if session.finished:
-                earned=self.progress.finish(self.language,"core",len(session.items),len(session.items),session.attempts,self.session_ids,session.perfect,self.curriculum)
-                self.complete("core",len(session.items),len(session.items),session.attempts,session.perfect,earned,session.answers)
-        else:
-            self.feedback=f"Try this one again. The answer is {' / '.join(answer.accepted)}. This run has a mistake; finish it for practice, then try a perfect run."
+        self.feedback=("Correct. " if answer.correct else "Correct meaning: ")+entry.meaning
         await self.save()
+
+    async def next_core(self):
+        session=self.session
+        session.advance()
+        self.feedback,self.feedback_correct,self.input_value="",None,""
+        if session.finished:
+            earned=self.progress.finish(self.language,"core",len(session.items),session.correct_count,session.attempts,self.session_ids,session.perfect,self.curriculum)
+            self.complete("core",len(session.items),session.correct_count,session.attempts,session.perfect,earned,session.answers)
+            await self.save()
 
     def answer_field(self, label, handler, hanzi=False, disabled=False):
         return ft.TextField(value=self.input_value,label=label,autofocus=True,disabled=disabled,autocorrect=False,enable_suggestions=hanzi,
@@ -510,11 +546,14 @@ class App:
     def core(self):
         session=self.session
         entry=session.current
-        return self.column([self.session_top("Write the characters · Core quiz",session.index+1,len(session.items)),
-            self.panel([self.tag("ENGLISH → CHARACTERS"),self.text(entry.meaning,25,bold=True),self.text(f"Write {len(entry.text(self.language,self.traditional))} Chinese character(s).",14,muted=True),
-                self.answer_field("Your answer in Chinese",self.answer_core,hanzi=True),self.button("Check answer",self.answer_core,primary=True),self.feedback_card(),
-                self.text(f"{session.mistakes} mistakes · {session.attempts} attempts · all questions stay fixed",12,muted=True),
-                self.text("A perfect completed run earns a trophy for every selected category. After a wrong answer, correct the same question to continue.",13,muted=True)],padding=28)],spacing=20)
+        example=entry.example(self.language,self.traditional)
+        context=[self.text(example["text"],18,hanzi=True)] if example.get("source")!="Reference" and example["text"]!=entry.text(self.language,self.traditional) else []
+        revealed=[self.text(entry.reading(self.language),17),*([self.text(example["english"],14,muted=True)] if context else []),self.learned_control(entry)] if session.pending else []
+        return self.column([self.session_top("Recognise the meaning",session.index+1,len(session.items)),
+            self.panel([self.text(entry.text(self.language,self.traditional),42,hanzi=True),*context,self.text("Choose the meaning. Each card is answered once.",14,muted=True),
+                *[self.button(meaning,self.answer_core,meaning,disabled=session.pending is not None) for meaning in session.options()],
+                self.feedback_card(),*revealed,self.button("Finish quiz" if session.index+1==len(session.items) else "Next card →",self.next_core,primary=True,disabled=session.pending is None),
+                self.text("A perfect first-answer run earns a trophy. Wrong answers show the correction; continue without retrying.",13,muted=True)],padding=24)],spacing=20)
 
     async def answer_drill(self, value=None):
         session=self.session
@@ -570,6 +609,8 @@ class App:
     async def rate_flashcard(self, known):
         if not self.flash_revealed:
             return
+        entry=self.flash_items[self.flash_index]
+        self.progress.set_learned(self.language,self.curriculum.learned_key(entry,self.language),known)
         self.flash_known+=int(known)
         self.flash_index+=1
         self.progress.state(self.language)["flashcards"]+=1
@@ -584,11 +625,11 @@ class App:
         controls=[self.text(entry.text(self.language,self.traditional),65,hanzi=True),self.text("Try to recall the reading and meaning before revealing.",14,muted=True)]
         if self.flash_revealed:
             ex=entry.example(self.language,self.traditional)
-            controls += [self.text(entry.reading(self.language),20),self.text(entry.meaning,22,bold=True),self.text(ex["text"],20,hanzi=True),self.text(ex["english"],14,muted=True),
+            controls += [self.text(entry.reading(self.language),20),self.text(entry.meaning,22,bold=True),self.learned_control(entry),self.text(ex["text"],20,hanzi=True),self.text(ex["english"],14,muted=True),
                 ft.Row([self.button("Still learning",self.rate_flashcard,False),self.button("I knew it",self.rate_flashcard,True,primary=True)],wrap=True)]
         else:
             controls.append(self.button("Reveal reading & meaning",self.reveal_flashcard,primary=True))
-        return self.column([self.session_top("Train flashcards",self.flash_index+1,len(self.flash_items)),self.panel(controls,padding=28),self.text("Flashcard ratings are self-assessments. They do not count toward graded accuracy or core trophies.",13,muted=True)],spacing=20)
+        return self.column([self.session_top("Train flashcards",self.flash_index+1,len(self.flash_items)),self.panel(controls,padding=28),self.text("“I knew it” marks this card learned; “Still learning” clears that mark. These choices do not affect quiz accuracy or trophies.",13,muted=True)],spacing=20)
 
     def choose_match_left(self, entry_id):
         self.match_left=entry_id
@@ -601,12 +642,12 @@ class App:
         session=self.session
         answer=session.answer(self.match_left,entry_id)
         self.progress.record_answer(self.language,answer.correct)
-        self.feedback="Matched!" if answer.correct else "Those do not match. Try another pair."
+        self.feedback="Matched!" if answer.correct else "Correct pair: "+self.curriculum.entries[answer.item_id].text(self.language,self.traditional)+" → "+self.curriculum.entries[answer.item_id].meaning+". That card is now finished."
         self.feedback_correct=answer.correct
         self.match_left=None
         if session.finished:
-            self.progress.finish(self.language,"match",len(session.items),len(session.items),session.attempts,self.session_ids)
-            self.complete("match",len(session.items),len(session.items),session.attempts,False,[],session.answers)
+            self.progress.finish(self.language,"match",len(session.items),session.correct_count,session.attempts,self.session_ids)
+            self.complete("match",len(session.items),session.correct_count,session.attempts,False,[],session.answers)
         await self.save()
 
     def match(self):
@@ -634,7 +675,7 @@ class App:
         controls=[self.tag(MODE_NAMES[r["mode"]].upper()),self.text(headline,30,bold=True),self.text(f"{score:.0%}",58,bold=True),
             self.text(f'{r["correct"]}/{r["total"]} '+("self-rated known" if r["mode"]=="flashcards" else "correct")+f' · {r["attempts"]} attempts',16,muted=True)]
         if r["mode"]=="core":
-            controls.append(self.text(f'{len(r["earned"])} new category trophies. All {len(r["ids"])} selected categories have a completed core quiz.' if r["perfect"] else "You corrected every question. Try again with no mistakes to earn the category trophy.",15))
+            controls.append(self.text(f'{len(r["earned"])} new category trophies. All {len(r["ids"])} selected categories have a completed core quiz.' if r["perfect"] else "Every card was answered once. Start a fresh run to try for a perfect trophy.",15))
         controls.append(ft.Row([self.button("Practise again",self.start,r["mode"],r["ids"],primary=True),self.button("Choose categories",self.navigate,"categories"),self.button("View progress",self.navigate,"progress")],wrap=True))
         wrong={a.item_id:a for a in r["answers"] if not a.correct}
         if wrong:
@@ -650,7 +691,7 @@ class App:
         state=self.progress.state(self.language)
         trophies=[cat for cat in self.curriculum.categories if self.progress.has_trophy(self.language,cat.id,self.curriculum)]
         controls=[self.heading("Your progress", self.language_label + " · saved in this browser; copy a backup to move devices"),
-            self.panel([self.text(f'{summary["characters"]} of 1,000 target characters practised',25,bold=True),ft.ProgressBar(value=summary["characters"]/1000,color=self.colors["accent"]),
+            self.panel([self.text(f'{summary["learned"]} target characters marked learned',25,bold=True),ft.ProgressBar(value=min(summary["learned"]/1000,1),color=self.colors["accent"]),self.text("Learned is your explicit choice in the dictionary. Practice alone does not mark a character learned.",13,muted=True),self.text(f'{summary["characters"]} of 1,000 target characters practised',20,bold=True),ft.ProgressBar(value=summary["characters"]/1000,color=self.colors["accent"]),
                 self.text(f'{summary["trophies"]} core trophies · {summary["attempts"]} graded attempts · '+("no graded answers yet" if summary["accuracy"] is None else f'{summary["accuracy"]:.1%} accuracy'),15),
                 self.text(f'{state["flashcards"]} flashcards reviewed. “Practised” follows this language’s character track. Earlier records and trophies remain saved.',13,muted=True)]),
             ft.Row([self.button("Copy / view progress backup",self.show_export,primary=True),self.button("Restore backup",self.show_import)],wrap=True),

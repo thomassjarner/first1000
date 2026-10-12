@@ -1,18 +1,20 @@
 # First 1000
 
-A character-first Mandarin and Cantonese learning app, written in Python with **Flet 1.0.3**. Learn in small sets, drill pronunciation, and earn a trophy by completing a fixed character-writing quiz without mistakes.
+A character-first Mandarin and Cantonese learning app, written in Python with **Flet 1.0.3**. Learn in small sets, drill pronunciation, and mark characters learned and earn trophies through one-pass recognition quizzes.
 
-## Changes in version 0.2.0
+## Changes in version 0.3.0
 
-Browse categories as a compact list, filter by topic or type, and sort by name, size, or unfinished trophies. Open a set and use Previous/Next to move through the filtered results. The dictionary is also a list; Details opens examples and attribution.
+**Learned** checkboxes in dictionary rows and Details save your explicit learning status. Learned and Still learning filters make it easy to find the right cards. Status is separate by language and shared across script forms. Progress shows learned target characters separately from characters merely practised. On flashcards, **I knew it** also marks the card learned; **Still learning** clears that mark.
 
-**Sentences** opens 12 situations with 48 paired original Mandarin/spoken Cantonese examples, including paying the bill, ordering food, shopping, directions, transport, checking in, appointments, meeting people, making plans, asking for help, and feeling unwell. Choose a sentence's English meaning, then review its pronunciation.
+All flashcard/practice sets now have at least **15 cards**. Small situations combine their four original sentences with related vocabulary. Small vocabulary groups add related words from other levels. Original category memberships and existing trophy fingerprints stay intact; supplementary practice membership is stored separately in `practice_sets.json`.
 
-Cantonese has its own forty 25-character sets and a separate 1,000-character target list. Its order prioritizes spoken essentials, then character occurrence counts within the bundled Cantonese examples. This provisional curriculum order is not a representative general-language frequency ranking. Mandarin's original character sets remain unchanged, as do all original category fingerprints. Earlier Cantonese trophies and attempts remain saved and visible in Progress.
+The handwriting-from-English quiz is replaced by **Chinese-to-meaning recognition**, with sentence context when available. Each card accepts one answer, shows the correction and reading, then continues with Next (or Enter after feedback). Matching mistakes also finish the attempted card and show the correct pair; each pair is scored once. Character and sentence drills retain the same one-answer correction/continue flow.
 
-In character drills, **Enter** checks an answer or reveals the reading when the field is empty; **Enter again** advances. A blank reveal counts as an incorrect attempt. Enter also works in choice mode. Traditional script and spoken-expression labels replace the Hong Kong framing in navigation; the original regional vocabulary remains available.
+**Pick all categories** selects every category for the current language, even when the list is filtered. Dictionary sort buttons reverse direction when clicked again; Frequency toggles most-common/least-common first, while unranked entries stay last.
 
-The original content described below is retained; the new sets are additive. See [UPDATE_0.2.0.md](UPDATE_0.2.0.md) for migration and content notes.
+The responsive layout and page-edge scrollbar from 0.2.2 remain. Cantonese still has a separate provisional character order based on spoken essentials and bundled examples, rather than a representative general-language frequency corpus. Twelve situations retain 48 original Mandarin/spoken Cantonese sentences.
+
+See [UPDATE_0.3.0.md](UPDATE_0.3.0.md) for details.
 
 ## Start using it
 
@@ -49,13 +51,13 @@ The command opens the app in a browser. Keep the terminal running while you use 
 - **1,000 frequency-ranked characters** in 40 fixed sets of 25.
 - **1,231 words and phrases**: 1,193 unique headwords from HSK 2012 levels 1–4 and 38 everyday Hong Kong phrases, in 93 small themed sets.
 - Category dictionaries, flashcards, mixed-category practice, and a searchable general dictionary. The dictionary has 2,231 records including the separately labelled character cards.
-- One core quiz per category: read the English meaning and type Chinese characters. An incorrect answer stays until corrected. A trophy requires an entirely error-free completed run.
+- One recognition quiz per category: read Chinese, use the example context, and choose the meaning. Each card has one scored attempt. The answer is revealed before continuing; an entirely error-free run earns a trophy.
 - Character drilling with numbered Pinyin or Jyutping, or exactly eight multiple-choice options. The session uses each distinct displayed character once. Recorded alternative readings are accepted for polyphonic characters.
 - A six-pair character-to-meaning matching game, graded accuracy, session history, and progress backup/restore.
 
-Mandarin and Cantonese have separate scores and trophies. Simplified and traditional forms share a trophy within a language. Sentence meaning sessions record scores and history but do not award core trophies. Language and script switches are disabled during a practice session; dark mode is always available. Character practice may include extra characters introduced by themed words, while the progress goal remains the 1,000 target characters.
+Mandarin and Cantonese have separate scores and trophies. Simplified and traditional forms share learned status and trophies within a language. Sentence meaning sessions record scores and history but do not award core trophies. Language and script switches are disabled during a practice session; dark mode is always available. Character practice may include extra characters introduced by themed words, while the progress goal remains the 1,000 target characters.
 
-Flashcard ratings are self-assessments and do not affect graded accuracy. Core/matching accuracy counts every attempt, including retries. Driller accuracy uses the first and only answer to each character.
+Flashcard ratings are explicit self-assessments that update Learned status and do not affect graded accuracy. Recognition and matching accuracy count each card once, without same-card retries. Driller accuracy uses the first and only answer to each character.
 
 ## Progress and backups
 

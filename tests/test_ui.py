@@ -50,12 +50,12 @@ def test_all_screens_construct_and_sessions_complete(width,language,traditional)
     app.start("core",["core-01"]);app.render()
     core_text=[x.value for x in walk(app.core()) if isinstance(x,ft.Text)]
     assert app.session.current.reading(language) not in core_text
-    assert app.session.current.text(language,traditional) not in core_text
+    assert app.session.current.text(language,traditional) in core_text
     switches=[x for x in walk(app.header()) if isinstance(x,ft.Switch)]
     assert not switches[0].disabled and switches[1].disabled and switches[2].disabled
     assert all(inspect.iscoroutinefunction(x.on_change) for x in switches)
     while app.screen=="core":
-        app.input_value=app.session.current.text(language,traditional);run(app.answer_core());app.render()
+        app.input_value=app.session.current.meaning;run(app.answer_core());app.render();run(app.next_core());app.render()
     assert app.result["perfect"] and app.progress.has_trophy(language,"core-01",app.curriculum)
     assert Progress.from_json(preferences.values[STORAGE_KEY]).has_trophy(language,"core-01",app.curriculum)
     app.drill_mode="choice";app.start("drill",["core-01"]);app.render()

@@ -55,49 +55,69 @@ class Answer:
 
 
 class CoreSession:
-    def __init__(self, entries: Sequence[Entry], language: str, traditional: bool, rng: random.Random | None = None, shuffle: bool = True):
+    """One-pass Chinese-to-meaning recognition with a correction/next step."""
+    def __init__(self, entries, language, traditional, rng=None, shuffle=True, meaning_pool=None):
         self.items = list({entry.id: entry for entry in entries}.values())
         if not self.items:
-            raise ValueError("Select at least one nonempty category")
+            raise ValueError("Select a nonempty category")
         self.language, self.traditional = language, traditional
-        if shuffle:
-            (rng or random.Random()).shuffle(self.items)
+        self.rng = rng or random.Random()
+        if shuffle:self.rng.shuffle(self.items)
+        self.pool = sorted({entry.meaning for entry in (meaning_pool or self.items)})
         self.index = 0
-        self.attempts = 0
-        self.mistakes = 0
-        self.answers: list[Answer] = []
+        self.answers = []
+        self.pending = None
+        self._options = None
 
     @property
-    def current(self) -> Entry:
-        if self.finished:
-            raise ValueError("The quiz is finished")
+    def current(self):
         return self.items[self.index]
 
     @property
-    def finished(self) -> bool:
+    def finished(self):
         return self.index == len(self.items)
 
     @property
-    def perfect(self) -> bool:
+    def correct_count(self):
+        return sum(answer.correct for answer in self.answers)
+
+    @property
+    def attempts(self):
+        return len(self.answers)
+
+    @property
+    def mistakes(self):
+        return self.attempts - self.correct_count
+
+    @property
+    def perfect(self):
         return self.finished and self.mistakes == 0
 
     @property
-    def accuracy(self) -> float:
-        return (self.attempts - self.mistakes) / self.attempts if self.attempts else 0
+    def accuracy(self):
+        return self.correct_count / self.attempts if self.attempts else 0
 
-    def answer(self, value: str) -> Answer:
-        if not value.strip():
-            raise ValueError("Enter a Chinese character or word")
-        entry = self.current
-        accepted = entry.accepted_spellings(self.language, self.traditional)
-        correct = normalize_hanzi(value) in {normalize_hanzi(x) for x in accepted}
-        result = Answer(entry.id, correct, value.strip(), accepted)
-        self.attempts += 1
-        self.mistakes += int(not correct)
-        self.answers.append(result)
-        if correct:
-            self.index += 1
-        return result
+    def options(self):
+        if self._options is None:
+            others = [meaning for meaning in self.pool if meaning != self.current.meaning]
+            self._options = [self.current.meaning, *self.rng.sample(others, min(3,len(others)))]
+            self.rng.shuffle(self._options)
+        return list(self._options)
+
+    def answer(self, value):
+        if self.pending is not None:
+            raise ValueError("This card has already been answered; continue to the next")
+        if value not in self.options():
+            raise ValueError("Choose one of the meanings")
+        self.pending = Answer(self.current.id, value == self.current.meaning, value, (self.current.meaning,))
+        self.answers.append(self.pending)
+        return self.pending
+
+    def advance(self):
+        if self.pending is None:
+            raise ValueError("Choose a meaning first")
+        self.index += 1
+        self.pending, self._options = None, None
 
 
 class DrillSession:
@@ -194,7 +214,11 @@ class MatchSession:
 
     @property
     def accuracy(self) -> float:
-        return len(self.matched) / self.attempts if self.attempts else 0
+        return self.correct_count / self.attempts if self.attempts else 0
+
+    @property
+    def correct_count(self):
+        return sum(answer.correct for answer in self.answers)
 
     def answer(self, left_id: str, right_id: str) -> Answer:
         valid = {x.id for x in self.items}
@@ -202,8 +226,7 @@ class MatchSession:
             raise ValueError("Choose two unmatched cards")
         correct = left_id == right_id
         self.attempts += 1
-        if correct:
-            self.matched.add(left_id)
+        self.matched.add(left_id)
         result = Answer(left_id, correct, right_id, (left_id,))
         self.answers.append(result)
         return result

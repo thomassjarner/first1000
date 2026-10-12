@@ -118,6 +118,21 @@ class Curriculum:
             for entry_id in cat.entry_ids:
                 self.entry_categories[entry_id].append(cat)
 
+    def practice_entries(self, category_ids):
+        path = Path(__file__).with_name("data") / "practice_sets.json"
+        if not hasattr(self, "practice_sets"):
+            self.practice_sets = json.loads(path.read_text(encoding="utf-8"))["sets"]
+        ids = dict.fromkeys(eid for cid in category_ids for eid in self.practice_sets.get(cid, self.category_map[cid].entry_ids))
+        return [self.entries[eid] for eid in ids]
+
+    def learned_key(self, entry, language):
+        text = entry.text(language, False)
+        return "character:" + text if len(text) == 1 else "entry:" + entry.id
+
+    def target_learned_keys(self, language):
+        prefix = "cant-char:" if language == "cantonese" and hasattr(self, "cantonese_targets") else "c:"
+        return [self.learned_key(self.entries[prefix+glyph], language) for glyph in self.targets(language) if prefix+glyph in self.entries]
+
     def targets(self, language):
         return getattr(self, "cantonese_targets", self.target_characters) if language == "cantonese" else self.target_characters
 
@@ -126,8 +141,8 @@ class Curriculum:
         ids = dict.fromkeys(entry_id for category in self.categories if category.id in selected for entry_id in category.entry_ids)
         return [self.entries[x] for x in ids]
 
-    def selected_characters(self, category_ids: Iterable[str], language: str, traditional: bool) -> list[Character]:
-        glyphs = dict.fromkeys(glyph for entry in self.selected_entries(category_ids) for glyph in entry.text(language, traditional) if glyph in self.characters)
+    def selected_characters(self, category_ids: Iterable[str], language: str, traditional: bool, enriched: bool = False) -> list[Character]:
+        glyphs = dict.fromkeys(glyph for entry in (self.practice_entries(category_ids) if enriched else self.selected_entries(category_ids)) for glyph in entry.text(language, traditional) if glyph in self.characters)
         return [self.characters[glyph] for glyph in glyphs]
 
     def fingerprint(self, category_id: str, language: str) -> str:
@@ -136,7 +151,7 @@ class Curriculum:
         return hashlib.sha256(json.dumps(contents, ensure_ascii=False, separators=(",", ":")).encode()).hexdigest()[:20]
 
     def dictionary(self, query: str = "", language: str = "mandarin", traditional: bool = False, sort: str = "frequency", category_id: str = "all", hsk: str = "all") -> list[Entry]:
-        candidates = self.selected_entries([category_id]) if category_id != "all" else list(self.entries.values())
+        candidates = self.practice_entries([category_id]) if category_id != "all" else list(self.entries.values())
         query = query.strip().lower()
         if hsk != "all":
             candidates = [entry for entry in candidates if (entry.hsk == int(hsk) if hsk.isdigit() else entry.kind == "hong_kong")]

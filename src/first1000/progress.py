@@ -16,12 +16,25 @@ def now() -> str:
 
 
 def language_state() -> dict:
-    return {"attempts": 0, "correct": 0, "trophies": {}, "characters": {}, "sessions": [], "flashcards": 0}
+    return {"attempts": 0, "correct": 0, "trophies": {}, "characters": {}, "sessions": [], "flashcards": 0, "learned": {}}
 
 
 class Progress:
     def __init__(self, data: dict | None = None):
         self.data = data or {"app": "first1000", "schema": 1, "settings": {"dark": False, "language": "mandarin", "traditional": False}, "languages": {lang: language_state() for lang in LANGUAGES}, "updated_at": now()}
+
+        for language in LANGUAGES:
+            self.data["languages"][language].setdefault("learned", {})
+
+    def is_learned(self, language, key):
+        return key in self.state(language)["learned"]
+
+    def set_learned(self, language, key, value):
+        if value:
+            self.state(language)["learned"][key] = now()
+        else:
+            self.state(language)["learned"].pop(key, None)
+        self.data["updated_at"] = now()
 
     @property
     def settings(self) -> dict:
@@ -63,7 +76,7 @@ class Progress:
         state = self.state(language)
         practised = set(target for record in state["characters"].values() if record["attempts"] for target in record["target_ids"])
         practised &= set(curriculum.targets(language))
-        return {"attempts": state["attempts"], "accuracy": state["correct"] / state["attempts"] if state["attempts"] else None, "trophies": sum(self.has_trophy(language, cat.id, curriculum) for cat in curriculum.categories), "characters": len(practised), "sessions": len(state["sessions"])}
+        return {"learned": sum(key in state["learned"] for key in curriculum.target_learned_keys(language)), "learned_entries": len(state["learned"]), "attempts": state["attempts"], "accuracy": state["correct"] / state["attempts"] if state["attempts"] else None, "trophies": sum(self.has_trophy(language, cat.id, curriculum) for cat in curriculum.categories), "characters": len(practised), "sessions": len(state["sessions"])}
 
     def export(self) -> str:
         return json.dumps(self.data, ensure_ascii=False, indent=2, sort_keys=True)
@@ -90,6 +103,9 @@ class Progress:
             state = languages[language]
             if not isinstance(state, dict):
                 raise ValueError("Invalid progress section")
+            learned = state.get("learned", {})
+            if not isinstance(learned, dict) or len(learned) > 20000 or any(not isinstance(key, str) or not 1 <= len(key) <= 256 or not isinstance(value, str) or not 1 <= len(value) <= 64 for key, value in learned.items()):
+                raise ValueError("Invalid learned records")
             for key in ("attempts", "correct", "flashcards"):
                 value = state.get(key)
                 if type(value) is not int or value < 0 or value > 100_000_000:
