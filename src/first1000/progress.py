@@ -8,7 +8,7 @@ from datetime import datetime, timezone
 from .curriculum import Curriculum, LANGUAGES, Character
 
 STORAGE_KEY = "first1000.progress.v1"
-MAX_BACKUP_BYTES = 2_000_000
+MAX_BACKUP_BYTES = 12_000_000
 
 
 def now() -> str:
@@ -26,6 +26,10 @@ class Progress:
         for language in LANGUAGES:
             self.data["languages"][language].setdefault("learned", {})
             self.data["languages"][language].setdefault("drill_outcomes", {})
+            self.data["languages"][language].setdefault("word_learning", {})
+            self.data["languages"][language].setdefault("character_learning", {})
+            self.data["languages"][language].setdefault("character_sessions", {})
+            self.data["languages"][language].setdefault("frameworks_separated", False)
 
     def is_learned(self, language, key):
         return key in self.state(language)["learned"]
@@ -36,6 +40,32 @@ class Progress:
         else:
             self.state(language)["learned"].pop(key, None)
         self.data["updated_at"] = now()
+
+    def migrate_frameworks(self,curriculum):
+        for language in LANGUAGES:
+            state=self.state(language)
+            if state["frameworks_separated"]:continue
+            for entry in curriculum.entries.values():
+                if entry.kind not in ("vocabulary","hong_kong","sentence"):continue
+                key=curriculum.learned_key(entry,language)
+                if key in state["learned"]:
+                    state["word_learning"].setdefault(entry.id,state["learned"][key])
+            state["frameworks_separated"]=True
+
+    def is_word_learned(self,language,entry_id):
+        return entry_id in self.state(language)["word_learning"]
+
+    def set_word_learned(self,language,entry_id,value):
+        if value:self.state(language)["word_learning"][entry_id]=now()
+        else:self.state(language)["word_learning"].pop(entry_id,None)
+        self.data["updated_at"]=now()
+
+    def is_character_learned(self,language,glyph):
+        return glyph in self.state(language)["character_learning"]
+
+    def learn_typed_character(self,language,glyph):
+        self.state(language)["character_learning"][glyph]=now()
+        self.data["updated_at"]=now()
 
     @property
     def settings(self) -> dict:
@@ -123,6 +153,20 @@ class Progress:
             learned = state.get("learned", {})
             if not isinstance(learned, dict) or len(learned) > 20000 or any(not isinstance(key, str) or not 1 <= len(key) <= 256 or not isinstance(value, str) or not 1 <= len(value) <= 64 for key, value in learned.items()):
                 raise ValueError("Invalid learned records")
+            from .character_framework import validate_snapshot
+            for field in ("word_learning","character_learning"):
+                mapping=state.get(field,{})
+                if not isinstance(mapping,dict) or len(mapping)>20000 or any(not isinstance(key,str) or not 1<=len(key)<=256 or not isinstance(value,str) or not 1<=len(value)<=64 for key,value in mapping.items()):raise ValueError("Invalid separated learning records")
+                if field=="character_learning" and any(len(key)!=1 for key in mapping):raise ValueError("Invalid learned character")
+            if type(state.get("frameworks_separated",False)) is not bool:raise ValueError("Invalid learning migration state")
+            checkpoints=state.get("character_sessions",{})
+            if not isinstance(checkpoints,dict) or len(checkpoints)>256:raise ValueError("Invalid saved character sessions")
+            for key,value in checkpoints.items():
+                if not isinstance(key,str) or not 1<=len(key)<=140:raise ValueError("Invalid saved character group")
+                validate_snapshot(value)
+                if not isinstance(value.get("updated_at",""),str):raise ValueError("Invalid checkpoint timestamp")
+                from .character_framework import session_key
+                if key!=session_key(value["group_id"],value["traditional"]):raise ValueError("Saved character group mismatch")
             outcomes=state.get("drill_outcomes",{})
             if not isinstance(outcomes,dict) or len(outcomes)>20000 or any(not isinstance(key,str) or not 1<=len(key)<=256 or not isinstance(record,dict) or record.get("status") not in ("correct","almost","incorrect") or not isinstance(record.get("updated_at"),str) for key,record in outcomes.items()):
                 raise ValueError("Invalid drill outcomes")

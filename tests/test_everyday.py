@@ -40,10 +40,11 @@ def test_category_filters_sort_and_navigation():
     assert app.filtered_categories()[0].id=='situation-paying-the-bill'
 
 def test_cantonese_sets_are_separate():
-    app=make_app('cantonese');assert app.selected=={'cant-core-01'}
-    app.set_category_filter('category_kind','characters');assert len(app.filtered_categories())==40
-    assert all(cat.id.startswith('cant-core-') for cat in app.filtered_categories())
-    app.start('drill',list(app.selected));assert any(char.glyph=='唔' for char in app.session.items)
+    app=make_app('cantonese')
+    assert app.selected=={'situation-paying-the-bill'}
+    assert not any(cat.kind=='cantonese_characters' for cat in app.visible_categories())
+    asyncio.run(app.begin_character_group('common-1000'))
+    assert any(char.glyph=='唔' for char in app.session.items)
 
 @pytest.mark.parametrize('language',['mandarin','cantonese'])
 def test_enter_reveals_then_advances(language):

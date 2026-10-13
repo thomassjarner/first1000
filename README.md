@@ -1,14 +1,12 @@
 # First 1000
 
-A character-first Mandarin and Cantonese learning app, written in Python with **Flet 1.0.3**. Learn in small sets, drill pronunciation, and mark characters learned and earn trophies through one-pass recognition quizzes.
+Python/Flet web app with two independent learning frameworks.
 
-## Learning and review
+**Words & phrases:** choose situation categories, practise vocabulary, and mark words learned in the dictionary or after quizzes. Character learning does not automatically mark words learned. The dictionary can filter words to those using characters you have learned.
 
-Character driller cards show pronunciation for every status: Correct, Almost correct, Incorrect and Not attempted. Mandarin uses Pinyin; Cantonese uses Jyutping. Every stats card has a **Learned** checkbox that saves immediately. Learned characters are listed under **Progress**, alongside the learned-character bar.
+**Characters:** choose HSK 2012 levels 1–4 or cumulative 100–1,000 character groups. A fully correct typed pronunciation including tones records that displayed character as learned. Multiple-choice answers do not. Each group has Restart and Resume; order, position and a checked answer are saved. Restart clears the test checkpoint, not earned character learning. Mandarin/Cantonese and simplified/traditional checkpoints are separate. Cantonese common groups use the curated curriculum order, not a measured spoken-frequency corpus.
 
-Use the **Whole 1,000-character track** button or select categories. Latest pronunciation outcomes are stored per displayed glyph and language. A phonetic match with a wrong/missing tone is Almost correct. Completed quizzes show their score and ask which characters you know; correctness alone does not imply learned.
-
-Learning progress, drill outcomes, language/script settings and trophies use the existing browser storage key and survive normal deployments to the same website origin. Historical records are preserved; new completion records do not save accuracy. Backup/restore includes learned marks and outcomes. Keep the existing `.git` and `.venv` folders when replacing source files for an update.
+Existing browser data and the `first1000.progress.v1` storage key are preserved. Earlier manual character marks remain in backups; new character totals use typed-answer proof. Existing word marks migrate into separate word learning. Keep the same website origin and browser to retain progress. Backup/restore includes both frameworks and unfinished tests. Do not remove your local `.git` folder when replacing project files.
 
 ## Start using it
 
@@ -39,20 +37,6 @@ flet run --web src/main.py
 
 The command opens the app in a browser. Keep the terminal running while you use this local version. You do **not** need to rebuild the curriculum to run it: the complete curriculum and fonts are already included.
 
-## What is included
-
-- Home navigation, dark mode, Cantonese mode, and Hong Kong traditional characters.
-- **1,000 frequency-ranked characters** in 40 fixed sets of 25.
-- **1,231 words and phrases**: 1,193 unique headwords from HSK 2012 levels 1–4 and 38 everyday Hong Kong phrases, in 93 small themed sets.
-- Category dictionaries, flashcards, mixed-category practice, and a searchable general dictionary. The dictionary has 2,231 records including the separately labelled character cards.
-- One recognition quiz per category: read Chinese, use the example context, and choose the meaning. Each card has one scored attempt. The answer is revealed before continuing; an entirely error-free run earns a trophy.
-- Character drilling with numbered Pinyin or Jyutping, or exactly eight multiple-choice options. The session uses each distinct displayed character once. Recorded alternative readings are accepted for polyphonic characters.
-- A six-pair character-to-meaning matching game, graded accuracy, session history, and progress backup/restore.
-
-Mandarin and Cantonese have separate scores and trophies. Simplified and traditional forms share learned status and trophies within a language. Sentence meaning sessions record scores and history but do not award core trophies. Language and script switches are disabled during a practice session; dark mode is always available. Character practice may include extra characters introduced by themed words, while the progress goal remains the 1,000 target characters.
-
-Flashcard ratings are explicit self-assessments that update Learned status and do not affect graded accuracy. Recognition and matching accuracy count each card once, without same-card retries. Driller accuracy uses the first and only answer to each character.
-
 ## Progress and backups
 
 Progress is saved in the browser or Flet client on the current device using SharedPreferences. There is no account or cloud synchronization. A different browser, private window, device, or website origin has separate progress.
@@ -79,7 +63,7 @@ python -m http.server 8000 --directory dist
 
 Open `http://localhost:8000`. Serve the folder over HTTP; opening `index.html` as a local file will not run Python in the browser. A project hosted under a path such as `/first1000/` needs `python tools/build_web.py --base-url /first1000/`.
 
-Use the build script for static publishing. Version 0.1.2 also bundles the pinned Pyodide wheels for msgpack, six, micropip and packaging (including their runtime dependencies), and verifies their lockfile checksums to prevent missing-wheel startup errors. It resolves Flet 1.0.3's local Pyodide module URL against the site's base URL before checking the distribution. A raw `flet publish --no-cdn` build emits a bare module path that the browser cannot import.
+Use the build script for static publishing. The build also bundles the pinned Pyodide wheels for msgpack, six, micropip and packaging (including their runtime dependencies), and verifies their lockfile checksums to prevent missing-wheel startup errors. It resolves Flet 1.0.3's local Pyodide module URL against the site's base URL before checking the distribution. A raw `flet publish --no-cdn` build emits a bare module path that the browser cannot import.
 
 The static app runs Python through Pyodide. The first load downloads a Python/WebAssembly runtime and the Flet package, so allow it time to start. `--no-cdn` includes the runtime and CanvasKit in the website; Python package installation still needs network access on first load. This is not an offline guarantee.
 

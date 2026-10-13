@@ -62,7 +62,7 @@ def test_post_quiz_review_requires_explicit_selection_and_no_new_saved_accuracy(
 
 def test_whole_mandarin_track_completes_and_review_is_paginated():
     app=make_app();app.select_full_track();chars=app.drill_candidates();assert len(chars)==1000
-    app.start('drill',list(app.selected))
+    asyncio.run(app.begin_character_group('common-1000'))
     session=app.session
     while not session.finished:
         assert session.answer(session.current.readings('mandarin')[0]).status=='correct'

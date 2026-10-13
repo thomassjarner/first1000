@@ -25,16 +25,12 @@ def test_legacy_backup_adds_learned_field_without_resetting_scores():
 
 
 def test_learned_checkbox_persists_and_counts_without_practice():
-    app=make_app()
-    entry=app.curriculum.entries['c:国']
+    app=make_app();entry=next(entry for entry in app.curriculum.entries.values() if entry.kind=='vocabulary')
     field=next(control for control in walk(app.entry_row(entry)) if isinstance(control,ft.Checkbox))
     asyncio.run(field.on_change(SimpleNamespace(control=SimpleNamespace(value=True))))
-    assert app.progress.summary('mandarin',app.curriculum)['learned']==1
-    assert app.progress.summary('mandarin',app.curriculum)['attempts']==0
-    other=app.curriculum.entries['w:国'] if 'w:国' in app.curriculum.entries else entry
-    assert app.curriculum.learned_key(other,'mandarin')==app.curriculum.learned_key(entry,'mandarin')
     stored=Progress.from_json(app.preferences.values['first1000.progress.v1'])
-    assert stored.is_learned('mandarin','character:国')
+    assert stored.is_word_learned('mandarin',entry.id)
+    assert not stored.state('mandarin')['character_learning']
 
 
 def test_every_practice_set_is_at_least_fifteen_and_trophies_unchanged():
@@ -52,10 +48,10 @@ def test_pick_all_ignores_filters_and_uses_current_language():
     app=make_app('cantonese');app.category_query='bill';app.category_kind='situations'
     app.pick_all()
     assert app.selected=={cat.id for cat in app.visible_categories()}
-    assert 'cant-core-40' in app.selected and 'core-01' not in app.selected
-    app.start('drill',list(app.selected))
+    assert not any(cat.kind in ('characters','cantonese_characters') for cat in app.visible_categories())
+    asyncio.run(app.begin_character_group('common-1000'))
     assert len(app.session.items)==len({char.glyph for char in app.session.items})
-    assert len(app.session.items)>=1000
+    assert len(app.session.items)==len(app.available_character_groups()['common-1000'].glyphs)
 
 
 def test_sort_twice_reverses_frequency_and_keeps_unranked_last():
@@ -89,14 +85,14 @@ def test_mounted_learned_controls_and_recognition_complete():
         app,session,connection,_=await mounted_app()
         try:
             app.navigate('dictionary');app.render()
-            entry=app.curriculum.entries['c:国'];await app.mark_learned(entry,True);app.render()
+            entry=next(e for e in app.curriculum.entries.values() if e.kind=='vocabulary');await app.mark_learned(entry,True);app.render()
             app.dictionary_learned='learned';app.render();assert len(app.dictionary_entries())>=1
             app.start('core',['situation-paying-the-bill']);app.render()
             while app.screen=='core':
                 await app.answer_core(app.session.current.meaning);app.render()
                 await app.next_core();app.render()
             assert app.result['total']==15 and app.result['perfect']
-            assert Progress.from_json(app.progress.export()).is_learned('mandarin','character:国')
+            assert Progress.from_json(app.progress.export()).is_word_learned('mandarin',entry.id)
             assert connection.frames
         finally:session.close()
     asyncio.run(scenario())
@@ -110,14 +106,14 @@ def test_invalid_learned_backup_is_rejected(invalid):
 
 def test_explicit_flashcard_ratings_update_learned_status():
     app=make_app();app.start('flashcards',['core-01'])
-    entry=app.flash_items[0];key=app.curriculum.learned_key(entry,'mandarin')
+    entry=app.flash_items[0];key=entry.id
     app.reveal_flashcard();asyncio.run(app.rate_flashcard(True))
-    assert app.progress.is_learned('mandarin',key)
-    assert Progress.from_json(app.progress.export()).is_learned('mandarin',key)
-    app.start('flashcards',['core-01']);entry=app.flash_items[0];key=app.curriculum.learned_key(entry,'mandarin')
-    app.progress.set_learned('mandarin',key,True)
+    assert app.progress.is_word_learned('mandarin',key)
+    assert Progress.from_json(app.progress.export()).is_word_learned('mandarin',key)
+    app.start('flashcards',['core-01']);entry=app.flash_items[0];key=entry.id
+    app.progress.set_word_learned('mandarin',key,True)
     app.reveal_flashcard();asyncio.run(app.rate_flashcard(False))
-    assert not app.progress.is_learned('mandarin',key)
+    assert not app.progress.is_word_learned('mandarin',key)
 
 
 def test_learning_all_cantonese_targets_reaches_the_full_goal():

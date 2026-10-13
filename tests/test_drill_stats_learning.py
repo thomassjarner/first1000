@@ -15,16 +15,12 @@ def test_each_stats_filter_has_pronunciation_and_saved_learned_control(language,
     if status!='unseen':
         app.progress.record_answer(language,status=='correct',char,status=status,status_key=app.curriculum.drill_key(char.glyph))
     app.set_drill_filter(status)
-    view=app.drill_setup()
+    view=app.character_group_view()
     rows=[control for control in walk(view) if isinstance(control,ft.Text)]
     label='Pinyin' if language=='mandarin' else 'Jyutping'
     assert any(control.value==label+': '+' / '.join(char.readings(language)) for control in rows)
-    field=next(control for control in walk(view) if isinstance(control,ft.Checkbox) and control.label=='Learned')
-    field.value=True
-    asyncio.run(field.on_change(type('Event',(),{'control':field})()))
-    saved=Progress.from_json(app.preferences.values[STORAGE_KEY])
-    assert saved.is_learned(language,app.curriculum.character_key(char.glyph))
-    assert char.glyph in [entry.text(language,app.traditional) for entry in app.learned_character_entries()]
+    assert not any(isinstance(control,ft.Checkbox) for control in walk(view))
+
 
 
 def test_reload_preserves_progress_outcomes_and_trophies_with_same_storage_key():
@@ -39,6 +35,7 @@ def test_reload_preserves_progress_outcomes_and_trophies_with_same_storage_key()
     assert reloaded.progress.drill_status('mandarin',reloaded.curriculum.drill_key(char.glyph))=='almost'
     assert reloaded.progress.has_trophy('mandarin','core-01',reloaded.curriculum)
     assert reloaded.progress.summary('mandarin',reloaded.curriculum)['learned']==1
+    assert not reloaded.progress.is_character_learned('mandarin',char.glyph)
     asyncio.run(reloaded.set_character_learned(char.glyph,False))
     assert not reloaded.learned_character_entries()
 
@@ -49,10 +46,11 @@ def test_mounted_stats_checkboxes_and_progress_list_serialize():
         try:
             app.navigate('drill_setup');app.render()
             char=app.drill_candidates(filtered=False)[0]
-            await app.set_character_learned(char.glyph,True)
+            app.progress.learn_typed_character(app.language,char.glyph)
+            await app.save()
             app.navigate('progress');app.render()
             assert app.learned_character_entries()
-            assert any(control.value=='Learned characters' for control in session.index.values() if isinstance(control,ft.Text))
+            assert any(control.value=='Characters learned by typing' for control in session.index.values() if isinstance(control,ft.Text))
             assert connection.frames
         finally:session.close()
     asyncio.run(scenario())
